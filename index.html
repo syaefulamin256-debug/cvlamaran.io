@@ -3,1284 +3,1451 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume Leader - Professional CV Builder</title>
+  <title>Resume Leader - Buat CV Online Gratis</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
   <style>
-    body {
-      box-sizing: border-box;
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    html, body {
-      height: 100%;
-      width: 100%;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes scaleIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .fade-in {
-      animation: fadeIn 0.5s ease-out;
-    }
-
-    .scale-in {
-      animation: scaleIn 0.4s ease-out;
-    }
-
-    .template-card {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .template-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    }
-
-    .template-card.selected {
-      transform: translateY(-8px);
-      box-shadow: 0 0 0 4px #3b82f6, 0 20px 40px rgba(59, 130, 246, 0.3);
-    }
-
-    .template-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.05) 100%);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .template-card:hover::before {
-      opacity: 1;
-    }
-
-    .use-template-btn {
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s;
-    }
-
-    .template-card:hover .use-template-btn {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .loading-spinner {
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      width: 24px;
-      height: 24px;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .toast {
-      position: fixed;
-      top: 24px;
-      right: 24px;
-      padding: 16px 24px;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-      animation: fadeIn 0.3s ease-out;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .btn-primary, .btn-secondary {
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-primary:hover, .btn-secondary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn-primary::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-
-    .btn-primary:active::after {
-      width: 300px;
-      height: 300px;
-    }
-
-    input, textarea, select {
-      outline: none;
-      transition: all 0.3s;
-    }
-
-    input:focus, textarea:focus, select:focus {
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(4px);
-      z-index: 999;
-      animation: fadeIn 0.2s ease-out;
-    }
-
-    .modal-content {
-      animation: scaleIn 0.3s ease-out;
-    }
-
-    .skill-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .skill-badge:hover {
-      transform: scale(1.05);
-    }
-
-    .progress-step {
-      position: relative;
-      transition: all 0.3s;
-    }
-
-    .progress-step.active .step-circle {
-      transform: scale(1.2);
-    }
-
-    .section-divider {
-      position: relative;
-      text-align: center;
-      margin: 40px 0;
-    }
-
-    .section-divider::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
-    }
-
-    .section-divider span {
-      position: relative;
-      display: inline-block;
-      padding: 0 20px;
-      background: white;
-      color: #64748b;
-      font-weight: 600;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .cv-preview-container {
-      box-shadow: 0 0 60px rgba(0, 0, 0, 0.1);
-      background: white;
-    }
-
-    .floating-action {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 100;
-      animation: fadeIn 0.5s ease-out;
-    }
-  </style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .template-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            min-width: 300px;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #previewContent, #previewContent * {
+                visibility: visible;
+            }
+            #previewContent {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+        }
+    </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
  </head>
- <body class="h-full">
-  <div id="app" class="w-full h-full"></div>
+ <body class="bg-gray-50 h-full">
+  <div class="h-full flex flex-col"><!-- Header / Navbar -->
+   <header class="bg-white shadow-sm sticky top-0 z-50">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+     <div class="flex justify-between items-center">
+      <div class="flex items-center space-x-3 cursor-pointer" id="btnLogoHome">
+       <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center"><span class="text-white font-bold text-xl">RL</span>
+       </div>
+       <div>
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Resume Leader</h1>
+        <p class="text-xs text-gray-500">Buat Lamaran Kerja Profesional</p>
+       </div>
+      </div>
+      <div class="flex items-center space-x-4"><button id="btnDashboard" class="text-purple-600 hover:text-purple-700 font-semibold transition"> Dashboard </button> <button id="btnCVSaya" class="text-gray-600 hover:text-purple-600 font-medium transition"> Lamaran Saya </button> <button id="btnTemplate" class="text-gray-600 hover:text-purple-600 font-medium transition"> Template </button>
+       <div class="relative"><button id="btnProfil" class="flex items-center space-x-2 bg-purple-100 px-4 py-2 rounded-lg hover:bg-purple-200 transition">
+         <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center"><span class="text-white font-semibold text-sm" id="userInitial">BS</span>
+         </div><span class="font-medium text-gray-700" id="userName">Budi Santoso</span> </button>
+       </div>
+      </div>
+     </div>
+    </nav>
+   </header><!-- Main Content -->
+   <main class="flex-1 overflow-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><!-- Dashboard Section -->
+     <section id="sectionDashboard" class="animate-slide-in"><!-- Welcome Banner -->
+      <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-8 mb-8 text-white">
+       <div class="flex justify-between items-center">
+        <div>
+         <h2 class="text-3xl font-bold mb-2">Selamat Datang Kembali! 👋</h2>
+         <p class="text-purple-100 mb-4">Yuk lanjutkan membuat surat lamaran kerja profesional kamu</p><button id="btnBuatCVBaru" class="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition"> ➕ Buat Lamaran Baru </button>
+        </div>
+        <div class="hidden md:block">
+         <div class="text-right">
+          <div class="text-5xl font-bold" id="totalCVCount">
+           0
+          </div>
+          <div class="text-purple-100">
+           Lamaran Aktif
+          </div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Statistik Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+       <div class="bg-white rounded-xl p-6 shadow-sm card-hover">
+        <div class="flex items-center justify-between mb-2"><span class="text-gray-500 text-sm">Total Lamaran</span> <span class="text-2xl">📄</span>
+        </div>
+        <div class="text-3xl font-bold text-gray-800" id="statTotalCV">
+         0
+        </div>
+        <div class="text-xs text-green-600 mt-1">
+         Siap untuk dikirim
+        </div>
+       </div>
+       <div class="bg-white rounded-xl p-6 shadow-sm card-hover">
+        <div class="flex items-center justify-between mb-2"><span class="text-gray-500 text-sm">Lamaran Selesai</span> <span class="text-2xl">✅</span>
+        </div>
+        <div class="text-3xl font-bold text-gray-800" id="statPublished">
+         0
+        </div>
+        <div class="text-xs text-gray-500 mt-1" id="statPublishedPercent">
+         0% dari total
+        </div>
+       </div>
+       <div class="bg-white rounded-xl p-6 shadow-sm card-hover">
+        <div class="flex items-center justify-between mb-2"><span class="text-gray-500 text-sm">Jenis Instansi</span> <span class="text-2xl">🏢</span>
+        </div>
+        <div class="text-3xl font-bold text-gray-800" id="statTemplates">
+         0
+        </div>
+        <div class="text-xs text-gray-500 mt-1">
+         Variasi tujuan lamaran
+        </div>
+       </div>
+       <div class="bg-white rounded-xl p-6 shadow-sm card-hover">
+        <div class="flex items-center justify-between mb-2"><span class="text-gray-500 text-sm">Lamaran Draft</span> <span class="text-2xl">📝</span>
+        </div>
+        <div class="text-3xl font-bold text-gray-800" id="statDraft">
+         0
+        </div>
+        <div class="text-xs text-yellow-600 mt-1">
+         Perlu dilengkapi
+        </div>
+       </div>
+      </div><!-- Lamaran Terbaru -->
+      <div class="bg-white rounded-xl p-6 shadow-sm mb-8">
+       <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-gray-800">Lamaran Kerja Terbaru</h3><button id="btnLihatSemua" class="text-purple-600 hover:text-purple-700 font-medium text-sm"> Lihat Semua → </button>
+       </div>
+       <div class="space-y-4" id="daftarCVTerbaru"><!-- Lamaran akan dimuat di sini -->
+       </div>
+       <div id="emptyStateDashboard" class="text-center py-12 hidden">
+        <div class="text-6xl mb-4">
+         📄
+        </div>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2">Belum Ada Lamaran</h3>
+        <p class="text-gray-500 mb-4">Yuk mulai buat surat lamaran pertama kamu sekarang!</p><button class="btn-buat-cv-empty btn-primary text-white px-6 py-3 rounded-lg font-semibold shadow-lg"> ➕ Buat Lamaran Pertama </button>
+       </div>
+      </div><!-- Tips Section -->
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+       <h3 class="font-bold text-blue-900 mb-3 flex items-center"><span class="text-2xl mr-2">💡</span> Tips Membuat Lamaran Kerja yang Efektif</h3>
+       <ul class="space-y-2 text-sm text-blue-800">
+        <li>✅ <strong>Rumah Sakit:</strong> Tekankan dedikasi pelayanan kesehatan &amp; empati kepada pasien</li>
+        <li>✅ <strong>Perusahaan:</strong> Tunjukkan value yang bisa kamu berikan untuk perkembangan perusahaan</li>
+        <li>✅ <strong>Pemerintah:</strong> Tekankan komitmen mengabdi &amp; melayani masyarakat dengan integritas</li>
+        <li>✅ Sesuaikan bahasa &amp; format surat lamaran dengan budaya organisasi tujuan</li>
+        <li>✅ Periksa ejaan, tata bahasa, dan kelengkapan dokumen lampiran</li>
+       </ul>
+      </div>
+     </section><!-- Daftar Lamaran Section -->
+     <section id="sectionCVSaya" class="hidden animate-slide-in">
+      <div class="mb-6 flex justify-between items-center">
+       <div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Lamaran Kerja Saya</h2>
+        <p class="text-gray-600">Kelola semua surat lamaran kamu di sini</p>
+       </div><button id="btnBuatCVBaru2" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold shadow-lg"> ➕ Buat Lamaran Baru </button>
+      </div><!-- Filter & Search -->
+      <div class="bg-white rounded-xl p-6 shadow-sm mb-6">
+       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Cari Lamaran</label> <input type="text" id="searchCV" placeholder="Cari berdasarkan judul, posisi, atau instansi..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Status</label> <select id="filterStatus" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"> <option value="">Semua Status</option> <option value="published">Selesai</option> <option value="draft">Draft</option> </select>
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Jenis Instansi</label> <select id="filterTemplate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"> <option value="">Semua Instansi</option> <option value="rumah_sakit">🏥 Rumah Sakit</option> <option value="perusahaan">🏢 Perusahaan</option> <option value="pemerintah">🏛️ Pemerintah</option> </select>
+        </div>
+       </div>
+      </div><!-- Daftar CV Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="cvGrid"><!-- CV cards akan dimuat di sini -->
+      </div>
+      <div id="emptyStateCV" class="text-center py-12 bg-white rounded-xl hidden">
+       <div class="text-6xl mb-4">
+        🔍
+       </div>
+       <h3 class="text-xl font-semibold text-gray-700 mb-2">Tidak Ada Lamaran Ditemukan</h3>
+       <p class="text-gray-500 mb-4">Coba ubah filter atau pencarian kamu</p>
+      </div>
+     </section><!-- Template Section -->
+     <section id="sectionTemplate" class="hidden animate-slide-in">
+      <div class="mb-6">
+       <h2 class="text-2xl font-bold text-gray-800 mb-2">Pilih Template CV</h2>
+       <p class="text-gray-600">Pilih template yang sesuai dengan kepribadian dan profesi kamu</p>
+      </div><!-- Filter Kategori -->
+      <div class="bg-white rounded-xl p-6 shadow-sm mb-6">
+       <div class="flex flex-wrap gap-3" id="templateFilters"><button class="template-filter-btn active px-4 py-2 bg-purple-600 text-white rounded-lg font-medium" data-filter="all">Semua</button> <button class="template-filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition" data-filter="Modern">Modern</button> <button class="template-filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition" data-filter="Creative">Creative</button> <button class="template-filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition" data-filter="Minimalist">Minimalist</button> <button class="template-filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition" data-filter="Professional">Professional</button>
+       </div>
+      </div><!-- Template Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="templateGrid"><!-- Templates akan dimuat di sini -->
+      </div>
+     </section><!-- Form Buat CV Baru -->
+     <section id="sectionBuatCV" class="hidden animate-slide-in">
+      <div class="mb-6"><button id="btnKembali" class="text-purple-600 hover:text-purple-700 font-medium mb-3 flex items-center"> ← Kembali </button>
+       <h2 class="text-2xl font-bold text-gray-800 mb-2">Buat Lamaran Kerja Baru</h2>
+       <p class="text-gray-600">Isi informasi diri kamu untuk membuat surat lamaran yang sesuai dengan tujuan</p>
+      </div><!-- Progress Steps -->
+      <div class="bg-white rounded-xl p-6 shadow-sm mb-6">
+       <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+         <div id="step1Circle" class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+          1
+         </div><span id="step1Text" class="font-medium text-purple-600">Info Personal</span>
+        </div>
+        <div id="line1" class="h-1 flex-1 bg-gray-200 mx-4"></div>
+        <div class="flex items-center space-x-3">
+         <div id="step2Circle" class="w-10 h-10 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center font-bold">
+          2
+         </div><span id="step2Text" class="font-medium text-gray-500">Pengalaman</span>
+        </div>
+        <div id="line2" class="h-1 flex-1 bg-gray-200 mx-4"></div>
+        <div class="flex items-center space-x-3">
+         <div id="step3Circle" class="w-10 h-10 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center font-bold">
+          3
+         </div><span id="step3Text" class="font-medium text-gray-500">Pendidikan</span>
+        </div>
+        <div id="line3" class="h-1 flex-1 bg-gray-200 mx-4"></div>
+        <div class="flex items-center space-x-3">
+         <div id="step4Circle" class="w-10 h-10 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center font-bold">
+          4
+         </div><span id="step4Text" class="font-medium text-gray-500">Keahlian</span>
+        </div>
+       </div>
+      </div><!-- Step 1: Form Info Personal -->
+      <form id="formInfoPersonal" class="bg-white rounded-xl p-8 shadow-sm">
+       <h3 class="text-xl font-bold text-gray-800 mb-6">📋 Informasi Personal &amp; Jenis Lamaran</h3>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="md:col-span-2"><label for="jenisInstansi" class="block text-sm font-medium text-gray-700 mb-2"> Tujuan Lamaran Kerja <span class="text-red-500">*</span> </label> <select id="jenisInstansi" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"> <option value="">-- Pilih Tujuan Lamaran --</option> <option value="rumah_sakit">🏥 Rumah Sakit</option> <option value="perusahaan">🏢 Perusahaan Swasta</option> <option value="pemerintah">🏛️ Instansi Pemerintah</option> </select>
+         <p class="text-xs text-gray-500 mt-1">Pilih sesuai tempat kamu akan melamar agar format surat lamaran sesuai</p>
+        </div>
+        <div><label for="judulCV" class="block text-sm font-medium text-gray-700 mb-2"> Judul Lamaran <span class="text-red-500">*</span> </label> <input type="text" id="judulCV" required placeholder="Contoh: Lamaran Perawat RSUD Jakarta" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+         <p class="text-xs text-gray-500 mt-1">Untuk membedakan lamaran kamu yang satu dengan lainnya</p>
+        </div>
+        <div><label for="namaLengkap" class="block text-sm font-medium text-gray-700 mb-2"> Nama Lengkap <span class="text-red-500">*</span> </label> <input type="text" id="namaLengkap" required placeholder="Contoh: Budi Santoso" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <div><label for="posisi" class="block text-sm font-medium text-gray-700 mb-2"> Posisi yang Dilamar <span class="text-red-500">*</span> </label> <input type="text" id="posisi" required placeholder="Contoh: Senior Full Stack Developer" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <div><label for="email" class="block text-sm font-medium text-gray-700 mb-2"> Email <span class="text-red-500">*</span> </label> <input type="email" id="email" required placeholder="contoh@email.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <div><label for="telepon" class="block text-sm font-medium text-gray-700 mb-2"> Nomor Telepon <span class="text-red-500">*</span> </label> <input type="tel" id="telepon" required placeholder="+62 812-3456-7890" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <div><label for="kota" class="block text-sm font-medium text-gray-700 mb-2"> Kota Domisili <span class="text-red-500">*</span> </label> <input type="text" id="kota" required placeholder="Contoh: Jakarta" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <div><label for="namaInstansi" class="block text-sm font-medium text-gray-700 mb-2"> Nama Instansi Tujuan <span class="text-red-500">*</span> </label> <input type="text" id="namaInstansi" required placeholder="Contoh: RSUD Jakarta Pusat / PT Maju Jaya / Kementerian Kesehatan" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <div><label for="alamatInstansi" class="block text-sm font-medium text-gray-700 mb-2"> Alamat Instansi Tujuan <span class="text-red-500">*</span> </label> <input type="text" id="alamatInstansi" required placeholder="Contoh: Jl. Sudirman No. 123, Jakarta Pusat" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <div><label for="linkedin" class="block text-sm font-medium text-gray-700 mb-2"> LinkedIn (opsional) </label> <input type="text" id="linkedin" placeholder="linkedin.com/in/username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+        </div>
+        <div><label for="templatePilih" class="block text-sm font-medium text-gray-700 mb-2"> Pilih Template <span class="text-red-500">*</span> </label> <select id="templatePilih" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"> <option value="">-- Pilih Template --</option> <option value="Modern Executive">Modern Executive</option> <option value="Creative">Creative</option> <option value="Minimalist">Minimalist</option> <option value="Professional">Professional</option> </select>
+        </div>
+       </div>
+       <div class="mt-6"><label for="ringkasan" class="block text-sm font-medium text-gray-700 mb-2"> Ringkasan Profesional <span class="text-red-500">*</span> </label> <textarea id="ringkasan" rows="5" required placeholder="Ceritakan tentang diri kamu, pengalaman, dan keahlian dalam 3-4 kalimat..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"></textarea>
+        <p class="text-xs text-gray-500 mt-1">Contoh: "Software engineer berpengalaman 8+ tahun dalam membangun aplikasi web yang scalable. Keahlian di React, Node.js, dan teknologi cloud."</p>
+       </div>
+       <div class="mt-8 flex justify-end space-x-4"><button type="button" id="btnBatalBuat" class="px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"> Batal </button> <button type="submit" class="btn-primary px-8 py-3 text-white rounded-lg font-semibold shadow-lg"> Lanjutkan ke Pengalaman → </button>
+       </div>
+      </form><!-- Step 2: Form Pengalaman Kerja -->
+      <form id="formPengalaman" class="bg-white rounded-xl p-8 shadow-sm hidden">
+       <h3 class="text-xl font-bold text-gray-800 mb-6">💼 Pengalaman Kerja</h3>
+       <div id="pengalamanList" class="space-y-6"><!-- Pengalaman items akan ditambahkan di sini -->
+       </div><button type="button" id="btnTambahPengalaman" class="mt-4 px-6 py-3 border-2 border-purple-300 border-dashed text-purple-600 rounded-lg font-medium hover:bg-purple-50 transition w-full"> ➕ Tambah Pengalaman Kerja </button>
+       <div class="mt-8 flex justify-between"><button type="button" id="btnKembaliStep2" class="px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"> ← Kembali </button>
+        <div class="flex space-x-4"><button type="button" id="btnLewatiPengalaman" class="px-6 py-3 text-gray-600 hover:text-purple-600 font-medium transition"> Lewati </button> <button type="submit" class="btn-primary px-8 py-3 text-white rounded-lg font-semibold shadow-lg"> Lanjutkan ke Pendidikan → </button>
+        </div>
+       </div>
+      </form><!-- Step 3: Form Pendidikan -->
+      <form id="formPendidikan" class="bg-white rounded-xl p-8 shadow-sm hidden">
+       <h3 class="text-xl font-bold text-gray-800 mb-6">🎓 Pendidikan</h3>
+       <div id="pendidikanList" class="space-y-6"><!-- Pendidikan items akan ditambahkan di sini -->
+       </div><button type="button" id="btnTambahPendidikan" class="mt-4 px-6 py-3 border-2 border-purple-300 border-dashed text-purple-600 rounded-lg font-medium hover:bg-purple-50 transition w-full"> ➕ Tambah Pendidikan </button>
+       <div class="mt-8 flex justify-between"><button type="button" id="btnKembaliStep3" class="px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"> ← Kembali </button>
+        <div class="flex space-x-4"><button type="button" id="btnLewatiPendidikan" class="px-6 py-3 text-gray-600 hover:text-purple-600 font-medium transition"> Lewati </button> <button type="submit" class="btn-primary px-8 py-3 text-white rounded-lg font-semibold shadow-lg"> Lanjutkan ke Keahlian → </button>
+        </div>
+       </div>
+      </form><!-- Step 4: Form Keahlian -->
+      <form id="formKeahlian" class="bg-white rounded-xl p-8 shadow-sm hidden">
+       <h3 class="text-xl font-bold text-gray-800 mb-6">⚡ Keahlian &amp; Skill</h3>
+       <div class="mb-6"><label for="inputKeahlian" class="block text-sm font-medium text-gray-700 mb-2"> Tambah Keahlian </label>
+        <div class="flex space-x-2"><input type="text" id="inputKeahlian" placeholder="Contoh: JavaScript, Photoshop, Project Management" class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"> <button type="button" id="btnTambahKeahlian" class="px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition"> Tambah </button>
+        </div>
+        <p class="text-xs text-gray-500 mt-1">Tekan Enter atau klik Tambah untuk menambahkan keahlian</p>
+       </div>
+       <div id="keahlianList" class="flex flex-wrap gap-2 mb-6"><!-- Keahlian tags akan ditampilkan di sini -->
+       </div>
+       <div id="emptyStateKeahlian" class="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300"><span class="text-4xl mb-2 block">⚡</span>
+        <p class="text-gray-600">Belum ada keahlian ditambahkan</p>
+        <p class="text-sm text-gray-500">Tambahkan minimal 3 keahlian yang kamu kuasai</p>
+       </div>
+       <div class="mt-8 flex justify-between"><button type="button" id="btnKembaliStep4" class="px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"> ← Kembali </button>
+        <div class="flex space-x-4"><button type="button" id="btnSimpanDraft" class="px-6 py-3 border border-purple-600 text-purple-600 rounded-lg font-medium hover:bg-purple-50 transition"> 💾 Simpan sebagai Draft </button> <button type="submit" class="btn-primary px-8 py-3 text-white rounded-lg font-semibold shadow-lg"> ✅ Selesai &amp; Simpan CV </button>
+        </div>
+       </div>
+      </form>
+     </section><!-- Preview CV Section -->
+     <section id="sectionPreview" class="hidden animate-slide-in">
+      <div class="mb-6 flex justify-between items-center">
+       <div><button id="btnKembaliPreview" class="text-purple-600 hover:text-purple-700 font-medium mb-3 flex items-center"> ← Kembali ke Daftar CV </button>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Preview CV</h2>
+        <p class="text-gray-600" id="previewTitle">Lihat tampilan CV kamu sebelum di-download</p>
+       </div>
+       <div class="flex space-x-3"><button id="btnEditFromPreview" class="px-6 py-3 border border-purple-600 text-purple-600 rounded-lg font-medium hover:bg-purple-50 transition"> ✏️ Edit CV </button> <button id="btnDownloadPDF" class="btn-primary px-6 py-3 text-white rounded-lg font-semibold shadow-lg"> ⬇️ Download PDF </button>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-8" id="previewContent"><!-- CV Preview akan dimuat di sini -->
+      </div>
+     </section>
+    </div>
+   </main><!-- Footer -->
+   <footer class="bg-white border-t border-gray-200 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+     <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div>
+       <h3 class="font-bold text-gray-800 mb-3">Resume Leader</h3>
+       <p class="text-sm text-gray-600">Platform pembuatan CV online terbaik di Indonesia</p>
+      </div>
+      <div>
+       <h4 class="font-semibold text-gray-800 mb-3">Fitur</h4>
+       <ul class="space-y-2 text-sm text-gray-600">
+        <li><a href="#" class="hover:text-purple-600">Template CV</a></li>
+        <li><a href="#" class="hover:text-purple-600">Buat CV</a></li>
+        <li><a href="#" class="hover:text-purple-600">Tips Karir</a></li>
+       </ul>
+      </div>
+      <div>
+       <h4 class="font-semibold text-gray-800 mb-3">Bantuan</h4>
+       <ul class="space-y-2 text-sm text-gray-600">
+        <li><a href="#" class="hover:text-purple-600">Cara Menggunakan</a></li>
+        <li><a href="#" class="hover:text-purple-600">FAQ</a></li>
+        <li><a href="#" class="hover:text-purple-600">Hubungi Kami</a></li>
+       </ul>
+      </div>
+      <div>
+       <h4 class="font-semibold text-gray-800 mb-3">Legal</h4>
+       <ul class="space-y-2 text-sm text-gray-600">
+        <li><a href="#" class="hover:text-purple-600">Syarat &amp; Ketentuan</a></li>
+        <li><a href="#" class="hover:text-purple-600">Kebijakan Privasi</a></li>
+       </ul>
+      </div>
+     </div>
+     <div class="border-t border-gray-200 mt-8 pt-6 text-center text-sm text-gray-500">
+      © 2024 Resume Leader. Semua hak cipta dilindungi.
+     </div>
+    </div>
+   </footer>
+  </div><!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-5 right-5 z-50 space-y-2"></div>
   <script>
-    const defaultConfig = {
-      background_color: "#f8fafc",
-      surface_color: "#ffffff",
-      text_color: "#1e293b",
-      primary_action_color: "#3b82f6",
-      secondary_action_color: "#64748b",
-      font_family: "Inter",
-      font_size: 16,
-      main_title: "Choose Your Professional Template",
-      main_subtitle: "Select a template to get started with your resume"
-    };
+        // ==================== DATA MANAGEMENT ====================
+        let cvList = [];
+        let currentEditingCV = null;
+        let currentStep = 1;
+        let formData = {
+            personal: {},
+            pengalaman: [],
+            pendidikan: [],
+            keahlian: []
+        };
 
-    let currentView = 'templates';
-    let selectedTemplate = null;
-    let currentFormStep = 0;
-    let resumeData = {
-      personal: {},
-      experiences: [],
-      education: [],
-      skills: [],
-      languages: []
-    };
-
-    const templates = [
-      {
-        id: 'professional',
-        name: 'Professional',
-        category: 'Classic',
-        color: '#2563eb',
-        preview: 'Simple and clean layout perfect for any industry'
-      },
-      {
-        id: 'modern',
-        name: 'Modern Executive',
-        category: 'Modern',
-        color: '#7c3aed',
-        preview: 'Contemporary design for forward-thinking professionals'
-      },
-      {
-        id: 'creative',
-        name: 'Creative Pro',
-        category: 'Creative',
-        color: '#dc2626',
-        preview: 'Bold and unique for creative industries'
-      },
-      {
-        id: 'minimal',
-        name: 'Minimal Clean',
-        category: 'Minimalist',
-        color: '#059669',
-        preview: 'Less is more - clean and ATS-friendly'
-      },
-      {
-        id: 'elegant',
-        name: 'Elegant',
-        category: 'Classic',
-        color: '#0891b2',
-        preview: 'Sophisticated design for senior positions'
-      },
-      {
-        id: 'tech',
-        name: 'Tech Savvy',
-        category: 'Modern',
-        color: '#ea580c',
-        preview: 'Perfect for technology and startup roles'
-      }
-    ];
-
-    function initApp() {
-      renderTemplateSelection();
-    }
-
-    function renderTemplateSelection() {
-      currentView = 'templates';
-      const app = document.getElementById('app');
-      
-      app.innerHTML = `
-        <div class="w-full h-full overflow-auto">
-          <!-- Header -->
-          <header class="sticky top-0 z-50 bg-white shadow-sm">
-            <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center text-2xl" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">
-                  📄
-                </div>
-                <h1 class="text-2xl font-bold" style="color: #1e293b;">Resume Leader</h1>
-              </div>
-              <div class="flex items-center gap-3">
-                <button onclick="showSavedResumes()" class="px-4 py-2 rounded-lg font-medium transition-all" style="color: #64748b; background: #f1f5f9;">
-                  My Resumes
-                </button>
-              </div>
-            </div>
-          </header>
-
-          <!-- Main Content -->
-          <main class="max-w-7xl mx-auto px-6 py-12">
-            <!-- Title Section -->
-            <div class="text-center mb-12 fade-in">
-              <h2 class="text-4xl md:text-5xl font-bold mb-4" style="color: #1e293b;" id="mainTitle">${defaultConfig.main_title}</h2>
-              <p class="text-lg md:text-xl" style="color: #64748b;" id="mainSubtitle">${defaultConfig.main_subtitle}</p>
-            </div>
-
-            <!-- Template Categories Filter -->
-            <div class="flex justify-center gap-3 mb-8 flex-wrap">
-              <button onclick="filterTemplates('all')" class="category-btn active px-6 py-2 rounded-full font-semibold transition-all">
-                All Templates
-              </button>
-              <button onclick="filterTemplates('Classic')" class="category-btn px-6 py-2 rounded-full font-semibold transition-all">
-                Classic
-              </button>
-              <button onclick="filterTemplates('Modern')" class="category-btn px-6 py-2 rounded-full font-semibold transition-all">
-                Modern
-              </button>
-              <button onclick="filterTemplates('Creative')" class="category-btn px-6 py-2 rounded-full font-semibold transition-all">
-                Creative
-              </button>
-              <button onclick="filterTemplates('Minimalist')" class="category-btn px-6 py-2 rounded-full font-semibold transition-all">
-                Minimalist
-              </button>
-            </div>
-
-            <!-- Templates Grid -->
-            <div id="templatesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              ${templates.map((template, index) => `
-                <div class="template-card bg-white rounded-2xl overflow-hidden shadow-lg ${selectedTemplate === template.id ? 'selected' : ''}" 
-                     data-category="${template.category}"
-                     data-template="${template.id}"
-                     onclick="selectTemplate('${template.id}')"
-                     style="animation-delay: ${index * 0.1}s;">
-                  
-                  <!-- Template Preview -->
-                  <div class="relative h-80" style="background: linear-gradient(135deg, ${template.color}15, ${template.color}30);">
-                    <div class="absolute inset-0 p-6 flex flex-col">
-                      <!-- Mock CV Content -->
-                      <div class="mb-4 pb-3" style="border-bottom: 3px solid ${template.color};">
-                        <div class="w-32 h-4 rounded mb-2" style="background: ${template.color};"></div>
-                        <div class="w-24 h-2 rounded" style="background: ${template.color}80;"></div>
-                      </div>
-                      <div class="space-y-2 mb-4">
-                        <div class="w-full h-2 rounded" style="background: ${template.color}40;"></div>
-                        <div class="w-5/6 h-2 rounded" style="background: ${template.color}40;"></div>
-                      </div>
-                      <div class="space-y-3 flex-1">
-                        <div class="space-y-1">
-                          <div class="w-24 h-3 rounded" style="background: ${template.color};"></div>
-                          <div class="w-full h-2 rounded" style="background: ${template.color}30;"></div>
-                          <div class="w-4/5 h-2 rounded" style="background: ${template.color}30;"></div>
-                        </div>
-                        <div class="space-y-1">
-                          <div class="w-20 h-3 rounded" style="background: ${template.color};"></div>
-                          <div class="w-full h-2 rounded" style="background: ${template.color}30;"></div>
-                        </div>
-                      </div>
-                      <div class="flex gap-2 mt-auto">
-                        <div class="w-16 h-6 rounded-full" style="background: ${template.color}40;"></div>
-                        <div class="w-16 h-6 rounded-full" style="background: ${template.color}40;"></div>
-                        <div class="w-16 h-6 rounded-full" style="background: ${template.color}40;"></div>
-                      </div>
-                    </div>
-                    
-                    <!-- Hover Overlay -->
-                    <div class="use-template-btn absolute inset-x-0 bottom-0 p-6">
-                      <button class="w-full py-3 rounded-xl text-white font-bold shadow-lg transition-all" style="background: ${template.color};">
-                        Use This Template →
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Template Info -->
-                  <div class="p-6">
-                    <div class="flex items-center justify-between mb-2">
-                      <h3 class="text-xl font-bold" style="color: #1e293b;">${template.name}</h3>
-                      <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: ${template.color}20; color: ${template.color};">
-                        ${template.category}
-                      </span>
-                    </div>
-                    <p class="text-sm" style="color: #64748b;">${template.preview}</p>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-
-            ${selectedTemplate ? `
-              <div class="fixed bottom-8 right-8 z-50 scale-in">
-                <button onclick="startBuildingResume()" class="btn-primary flex items-center gap-3 px-8 py-4 rounded-full text-white font-bold text-lg shadow-2xl">
-                  <span>Continue with ${templates.find(t => t.id === selectedTemplate).name}</span>
-                  <span>→</span>
-                </button>
-              </div>
-            ` : ''}
-          </main>
-        </div>
-      `;
-
-      updateUI();
-      setupCategoryButtons();
-    }
-
-    function setupCategoryButtons() {
-      const buttons = document.querySelectorAll('.category-btn');
-      buttons.forEach(btn => {
-        const isActive = btn.classList.contains('active');
-        btn.style.background = isActive ? '#3b82f6' : '#f1f5f9';
-        btn.style.color = isActive ? '#ffffff' : '#64748b';
-      });
-    }
-
-    function filterTemplates(category) {
-      const cards = document.querySelectorAll('.template-card');
-      const buttons = document.querySelectorAll('.category-btn');
-      
-      buttons.forEach(btn => {
-        const isActive = btn.textContent.includes(category) || (category === 'all' && btn.textContent.includes('All'));
-        btn.classList.toggle('active', isActive);
-        btn.style.background = isActive ? '#3b82f6' : '#f1f5f9';
-        btn.style.color = isActive ? '#ffffff' : '#64748b';
-      });
-
-      cards.forEach(card => {
-        if (category === 'all' || card.dataset.category === category) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('resumeLeaderCVs');
+            if (saved) {
+                cvList = JSON.parse(saved);
+            }
         }
-      });
-    }
 
-    function selectTemplate(templateId) {
-      selectedTemplate = templateId;
-      
-      const cards = document.querySelectorAll('.template-card');
-      cards.forEach(card => {
-        card.classList.toggle('selected', card.dataset.template === templateId);
-      });
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('resumeLeaderCVs', JSON.stringify(cvList));
+            updateStats();
+        }
 
-      renderTemplateSelection();
-    }
+        // ==================== TOAST NOTIFICATIONS ====================
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+            
+            toast.className = `${bgColor} text-white px-6 py-4 rounded-lg shadow-lg animate-fade-in flex items-center space-x-3`;
+            toast.innerHTML = `
+                <span class="text-xl">${icon}</span>
+                <span class="font-medium">${message}</span>
+            `;
+            
+            document.getElementById('toastContainer').appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
-    function startBuildingResume() {
-      if (!selectedTemplate) {
-        showToast('Please select a template first', 'error');
-        return;
-      }
-      currentFormStep = 0;
-      renderResumeBuilder();
-    }
+        // ==================== NAVIGATION ====================
+        const sections = {
+            dashboard: document.getElementById('sectionDashboard'),
+            cvSaya: document.getElementById('sectionCVSaya'),
+            template: document.getElementById('sectionTemplate'),
+            buatCV: document.getElementById('sectionBuatCV'),
+            preview: document.getElementById('sectionPreview')
+        };
 
-    function renderResumeBuilder() {
-      const app = document.getElementById('app');
-      const steps = ['Personal Info', 'Experience', 'Education', 'Skills', 'Preview'];
-      
-      app.innerHTML = `
-        <div class="w-full h-full overflow-auto" style="background: #f8fafc;">
-          <!-- Header -->
-          <header class="bg-white shadow-sm sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-6 py-4">
-              <div class="flex items-center justify-between mb-4">
-                <button onclick="renderTemplateSelection()" class="btn-secondary px-4 py-2 rounded-lg text-white font-semibold">
-                  ← Back to Templates
+        function showSection(sectionName) {
+            Object.values(sections).forEach(section => section.classList.add('hidden'));
+            sections[sectionName].classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Update active menu
+            document.querySelectorAll('header button').forEach(btn => {
+                btn.classList.remove('text-purple-600', 'font-semibold');
+                btn.classList.add('text-gray-600', 'font-medium');
+            });
+            
+            if (sectionName === 'dashboard') {
+                document.getElementById('btnDashboard').classList.add('text-purple-600', 'font-semibold');
+                renderDashboard();
+            } else if (sectionName === 'cvSaya') {
+                document.getElementById('btnCVSaya').classList.add('text-purple-600', 'font-semibold');
+                renderCVList();
+            } else if (sectionName === 'template') {
+                document.getElementById('btnTemplate').classList.add('text-purple-600', 'font-semibold');
+                renderTemplates();
+            }
+        }
+
+        // ==================== STATISTICS ====================
+        function updateStats() {
+            const totalCV = cvList.length;
+            const published = cvList.filter(cv => cv.status === 'published').length;
+            const draft = cvList.filter(cv => cv.status === 'draft').length;
+            const templates = new Set(cvList.map(cv => cv.template)).size;
+            
+            document.getElementById('totalCVCount').textContent = totalCV;
+            document.getElementById('statTotalCV').textContent = totalCV;
+            document.getElementById('statPublished').textContent = published;
+            document.getElementById('statDraft').textContent = draft;
+            document.getElementById('statTemplates').textContent = templates;
+            
+            const publishedPercent = totalCV > 0 ? Math.round((published / totalCV) * 100) : 0;
+            document.getElementById('statPublishedPercent').textContent = `${publishedPercent}% dari total`;
+        }
+
+        // ==================== DASHBOARD ====================
+        function renderDashboard() {
+            const container = document.getElementById('daftarCVTerbaru');
+            const emptyState = document.getElementById('emptyStateDashboard');
+            
+            if (cvList.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            const recentCVs = cvList.slice(0, 3);
+            
+            container.innerHTML = recentCVs.map(cv => `
+                <div class="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition cursor-pointer">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h4 class="font-semibold text-gray-800">${cv.personal.judulCV}</h4>
+                                <span class="bg-${cv.status === 'published' ? 'green' : 'yellow'}-100 text-${cv.status === 'published' ? 'green' : 'yellow'}-700 text-xs px-2 py-1 rounded-full">
+                                    ${cv.status === 'published' ? 'Dipublish' : 'Draft'}
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">${cv.personal.namaLengkap} - ${cv.personal.posisi}</p>
+                            <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                <span>📅 Diubah: ${formatDate(cv.updatedAt)}</span>
+                                <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded">Template: ${cv.template}</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2 ml-4">
+                            <button onclick="editCV('${cv.id}')" class="p-2 hover:bg-gray-100 rounded-lg transition" title="Edit">
+                                <span class="text-xl">✏️</span>
+                            </button>
+                            <button onclick="previewCV('${cv.id}')" class="p-2 hover:bg-gray-100 rounded-lg transition" title="Lihat">
+                                <span class="text-xl">👁️</span>
+                            </button>
+                            <button onclick="downloadCV('${cv.id}')" class="p-2 hover:bg-gray-100 rounded-lg transition" title="Download">
+                                <span class="text-xl">⬇️</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== CV LIST ====================
+        function renderCVList(filterText = '', filterStatus = '', filterTemplate = '') {
+            const container = document.getElementById('cvGrid');
+            const emptyState = document.getElementById('emptyStateCV');
+            
+            let filtered = cvList;
+            
+            // Apply filters
+            if (filterText) {
+                filtered = filtered.filter(cv => 
+                    cv.personal.judulCV.toLowerCase().includes(filterText.toLowerCase()) ||
+                    cv.personal.posisi.toLowerCase().includes(filterText.toLowerCase()) ||
+                    (cv.personal.namaInstansi && cv.personal.namaInstansi.toLowerCase().includes(filterText.toLowerCase()))
+                );
+            }
+            
+            if (filterStatus) {
+                filtered = filtered.filter(cv => cv.status === filterStatus);
+            }
+            
+            if (filterTemplate) {
+                filtered = filtered.filter(cv => cv.personal.jenisInstansi === filterTemplate);
+            }
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            container.innerHTML = filtered.map(cv => `
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden card-hover relative" style="position: relative;">
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex flex-col space-y-2">
+                                <span class="bg-${cv.status === 'published' ? 'green' : 'yellow'}-100 text-${cv.status === 'published' ? 'green' : 'yellow'}-700 text-xs px-2 py-1 rounded-full w-fit">
+                                    ${cv.status === 'published' ? 'Dipublish' : 'Draft'}
+                                </span>
+                            </div>
+                            <div class="relative">
+                                <button onclick="toggleCVMenu('${cv.id}')" class="text-gray-400 hover:text-gray-600">
+                                    <span class="text-xl">⋮</span>
+                                </button>
+                                <div id="menu-${cv.id}" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                                    <button onclick="toggleStatus('${cv.id}')" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm">
+                                        ${cv.status === 'draft' ? '✅ Publish CV' : '📝 Jadikan Draft'}
+                                    </button>
+                                    <button onclick="duplicateCV('${cv.id}')" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm border-t">
+                                        📋 Duplikat CV
+                                    </button>
+                                    <button onclick="confirmDeleteCV('${cv.id}')" class="w-full text-left px-4 py-2 hover:bg-red-50 text-sm text-red-600 border-t">
+                                        🗑️ Hapus CV
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">${cv.personal.judulCV}</h3>
+                        <p class="text-sm text-gray-600 mb-1">${cv.personal.namaLengkap}</p>
+                        <p class="text-sm text-gray-500 mb-4">${cv.personal.posisi}</p>
+                        
+                        <div class="mb-4">
+                            <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">${cv.template}</span>
+                        </div>
+                        
+                        <div class="text-xs text-gray-400 mb-4">
+                            Terakhir diubah: ${formatDate(cv.updatedAt)}
+                        </div>
+                        
+                        <div class="flex space-x-2">
+                            <button onclick="editCV('${cv.id}')" class="flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition font-medium">
+                                ${cv.status === 'draft' ? 'Lanjutkan' : 'Edit'}
+                            </button>
+                            <button onclick="previewCV('${cv.id}')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                👁️
+                            </button>
+                            <button onclick="downloadCV('${cv.id}')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                ⬇️
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleCVMenu(cvId) {
+            const menu = document.getElementById(`menu-${cvId}`);
+            // Close all other menus
+            document.querySelectorAll('[id^="menu-"]').forEach(m => {
+                if (m.id !== `menu-${cvId}`) m.classList.add('hidden');
+            });
+            menu.classList.toggle('hidden');
+        }
+
+        function toggleStatus(cvId) {
+            const cv = cvList.find(c => c.id === cvId);
+            if (cv) {
+                cv.status = cv.status === 'draft' ? 'published' : 'draft';
+                cv.updatedAt = new Date().toISOString();
+                saveData();
+                renderCVList();
+                showToast(`CV berhasil ${cv.status === 'published' ? 'dipublish' : 'dijadikan draft'}!`);
+            }
+        }
+
+        function duplicateCV(cvId) {
+            const cv = cvList.find(c => c.id === cvId);
+            if (cv) {
+                const newCV = {
+                    ...JSON.parse(JSON.stringify(cv)),
+                    id: Date.now().toString(),
+                    personal: {
+                        ...cv.personal,
+                        judulCV: cv.personal.judulCV + ' (Salinan)'
+                    },
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                cvList.unshift(newCV);
+                saveData();
+                renderCVList();
+                showToast('CV berhasil diduplikat!');
+            }
+        }
+
+        function confirmDeleteCV(cvId) {
+            const cv = cvList.find(c => c.id === cvId);
+            if (!cv) return;
+            
+            const card = event.target.closest('.card-hover');
+            const buttonsDiv = card.querySelector('.flex.space-x-2');
+            
+            buttonsDiv.innerHTML = `
+                <button onclick="deleteCV('${cvId}')" class="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition font-medium">
+                    ✓ Ya, Hapus
                 </button>
-                <div class="text-sm font-medium" style="color: #64748b;">
-                  Step ${currentFormStep + 1} of ${steps.length}
-                </div>
-              </div>
-              
-              <!-- Progress Steps -->
-              <div class="flex items-center justify-between">
-                ${steps.map((step, index) => `
-                  <div class="progress-step flex-1 flex flex-col items-center ${index === currentFormStep ? 'active' : ''}">
-                    <div class="step-circle w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${index <= currentFormStep ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'}">
-                      ${index < currentFormStep ? '✓' : index + 1}
+                <button onclick="renderCVList()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition font-medium">
+                    Batal
+                </button>
+            `;
+        }
+
+        function deleteCV(cvId) {
+            cvList = cvList.filter(cv => cv.id !== cvId);
+            saveData();
+            renderCVList();
+            renderDashboard();
+            showToast('CV berhasil dihapus!', 'error');
+        }
+
+        // ==================== TEMPLATES ====================
+        const templates = [
+            { name: 'Modern Executive', category: 'Modern', color: 'purple', free: true },
+            { name: 'Creative', category: 'Creative', color: 'blue', free: true },
+            { name: 'Minimalist', category: 'Minimalist', color: 'green', free: true },
+            { name: 'Professional', category: 'Professional', color: 'indigo', free: true },
+            { name: 'Bold Designer', category: 'Creative', color: 'pink', free: true },
+            { name: 'Clean Tech', category: 'Modern', color: 'cyan', free: true },
+            { name: 'Executive Pro', category: 'Professional', color: 'gray', free: false },
+            { name: 'Creative Plus', category: 'Creative', color: 'orange', free: false }
+        ];
+
+        function renderTemplates(filter = 'all') {
+            const container = document.getElementById('templateGrid');
+            const filtered = filter === 'all' ? templates : templates.filter(t => t.category === filter);
+            
+            container.innerHTML = filtered.map(template => `
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden card-hover cursor-pointer relative" onclick="selectTemplate('${template.name}')">
+                    ${!template.free ? '<div class="absolute top-3 right-3 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold z-10">✨ PREMIUM</div>' : ''}
+                    <div class="h-64 bg-gradient-to-br from-${template.color}-100 to-${template.color}-50 flex items-center justify-center">
+                        <div class="text-center p-6">
+                            <div class="bg-white rounded-lg p-4 shadow-md">
+                                <div class="h-2 bg-${template.color}-600 rounded mb-2"></div>
+                                <div class="h-1 bg-gray-300 rounded mb-1"></div>
+                                <div class="h-1 bg-gray-300 rounded"></div>
+                                <div class="mt-2 grid grid-cols-2 gap-1">
+                                    <div class="h-1 bg-gray-200 rounded"></div>
+                                    <div class="h-1 bg-gray-200 rounded"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <span class="mt-2 text-xs font-medium ${index <= currentFormStep ? 'text-blue-600' : 'text-gray-400'}">${step}</span>
-                  </div>
-                  ${index < steps.length - 1 ? `<div class="flex-1 h-0.5 ${index < currentFormStep ? 'bg-blue-500' : 'bg-gray-200'}" style="margin: 0 -20px; z-index: -1;"></div>` : ''}
-                `).join('')}
-              </div>
-            </div>
-          </header>
-
-          <!-- Form Content -->
-          <main class="max-w-4xl mx-auto px-6 py-12">
-            <div id="formContent"></div>
-          </main>
-        </div>
-      `;
-
-      renderFormStep();
-      updateUI();
-    }
-
-    function renderFormStep() {
-      const container = document.getElementById('formContent');
-      
-      if (currentFormStep === 0) {
-        renderPersonalInfoStep(container);
-      } else if (currentFormStep === 1) {
-        renderExperienceStep(container);
-      } else if (currentFormStep === 2) {
-        renderEducationStep(container);
-      } else if (currentFormStep === 3) {
-        renderSkillsStep(container);
-      } else if (currentFormStep === 4) {
-        renderPreviewStep(container);
-      }
-    }
-
-    function renderPersonalInfoStep(container) {
-      const data = resumeData.personal;
-      
-      container.innerHTML = `
-        <div class="bg-white rounded-2xl shadow-lg p-8 fade-in">
-          <div class="mb-8">
-            <h2 class="text-3xl font-bold mb-2" style="color: #1e293b;">Personal Information</h2>
-            <p style="color: #64748b;">Let's start with your basic information</p>
-          </div>
-
-          <form id="personalForm" onsubmit="savePersonalInfo(event)">
-            <div class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-sm font-semibold mb-2" style="color: #1e293b;">Full Name *</label>
-                  <input type="text" required value="${data.fullName || ''}" id="fullName" 
-                         class="w-full px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;"
-                         placeholder="John Doe">
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold mb-2" style="color: #1e293b;">Job Title *</label>
-                  <input type="text" required value="${data.jobTitle || ''}" id="jobTitle"
-                         class="w-full px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;"
-                         placeholder="Senior Software Engineer">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-sm font-semibold mb-2" style="color: #1e293b;">Email *</label>
-                  <input type="email" required value="${data.email || ''}" id="email"
-                         class="w-full px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;"
-                         placeholder="john@example.com">
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold mb-2" style="color: #1e293b;">Phone *</label>
-                  <input type="tel" required value="${data.phone || ''}" id="phone"
-                         class="w-full px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;"
-                         placeholder="+1 (555) 123-4567">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-sm font-semibold mb-2" style="color: #1e293b;">City</label>
-                  <input type="text" value="${data.city || ''}" id="city"
-                         class="w-full px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;"
-                         placeholder="New York">
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold mb-2" style="color: #1e293b;">LinkedIn</label>
-                  <input type="url" value="${data.linkedin || ''}" id="linkedin"
-                         class="w-full px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;"
-                         placeholder="linkedin.com/in/johndoe">
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-semibold mb-2" style="color: #1e293b;">Professional Summary *</label>
-                <textarea required rows="5" id="summary"
-                          class="w-full px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;"
-                          placeholder="Write a brief summary of your professional background and key achievements...">${data.summary || ''}</textarea>
-              </div>
-            </div>
-
-            <div class="flex justify-end mt-8">
-              <button type="submit" class="btn-primary px-8 py-3 rounded-xl text-white font-bold">
-                Continue to Experience →
-              </button>
-            </div>
-          </form>
-        </div>
-      `;
-    }
-
-    function savePersonalInfo(event) {
-      event.preventDefault();
-      
-      resumeData.personal = {
-        fullName: document.getElementById('fullName').value,
-        jobTitle: document.getElementById('jobTitle').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        city: document.getElementById('city').value,
-        linkedin: document.getElementById('linkedin').value,
-        summary: document.getElementById('summary').value
-      };
-
-      currentFormStep++;
-      renderResumeBuilder();
-    }
-
-    function renderExperienceStep(container) {
-      container.innerHTML = `
-        <div class="bg-white rounded-2xl shadow-lg p-8 fade-in">
-          <div class="flex items-center justify-between mb-8">
-            <div>
-              <h2 class="text-3xl font-bold mb-2" style="color: #1e293b;">Work Experience</h2>
-              <p style="color: #64748b;">Add your relevant work experience</p>
-            </div>
-            <button onclick="addExperience()" class="btn-primary px-6 py-3 rounded-xl text-white font-bold">
-              + Add Experience
-            </button>
-          </div>
-
-          <div id="experienceList" class="space-y-6 mb-8"></div>
-
-          <div class="flex justify-between">
-            <button onclick="previousFormStep()" class="btn-secondary px-8 py-3 rounded-xl text-white font-bold">
-              ← Back
-            </button>
-            <button onclick="nextFormStep()" class="btn-primary px-8 py-3 rounded-xl text-white font-bold">
-              Continue to Education →
-            </button>
-          </div>
-        </div>
-      `;
-
-      renderExperienceList();
-    }
-
-    function renderExperienceList() {
-      const list = document.getElementById('experienceList');
-      
-      if (resumeData.experiences.length === 0) {
-        list.innerHTML = `
-          <div class="text-center py-12" style="color: #94a3b8;">
-            <div class="text-5xl mb-4">💼</div>
-            <p class="text-lg">No work experience added yet</p>
-            <p class="text-sm mt-2">Click "Add Experience" to get started</p>
-          </div>
-        `;
-        return;
-      }
-
-      list.innerHTML = resumeData.experiences.map((exp, index) => `
-        <div class="border-2 rounded-xl p-6 scale-in" style="border-color: #e2e8f0;">
-          <div class="flex justify-between items-start mb-4">
-            <h3 class="text-lg font-bold" style="color: #1e293b;">Experience #${index + 1}</h3>
-            <button onclick="removeExperience(${index})" class="text-red-500 font-semibold hover:text-red-700">
-              Remove
-            </button>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" placeholder="Job Title *" value="${exp.title || ''}"
-                   onchange="updateExperience(${index}, 'title', this.value)"
-                   class="px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;">
-            <input type="text" placeholder="Company Name *" value="${exp.company || ''}"
-                   onchange="updateExperience(${index}, 'company', this.value)"
-                   class="px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;">
-            <input type="text" placeholder="Start Date (e.g., Jan 2020)" value="${exp.startDate || ''}"
-                   onchange="updateExperience(${index}, 'startDate', this.value)"
-                   class="px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;">
-            <input type="text" placeholder="End Date (e.g., Present)" value="${exp.endDate || ''}"
-                   onchange="updateExperience(${index}, 'endDate', this.value)"
-                   class="px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;">
-            <textarea placeholder="Key achievements and responsibilities..." rows="4"
-                      onchange="updateExperience(${index}, 'description', this.value)"
-                      class="md:col-span-2 px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;">${exp.description || ''}</textarea>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function addExperience() {
-      resumeData.experiences.push({
-        title: '',
-        company: '',
-        startDate: '',
-        endDate: '',
-        description: ''
-      });
-      renderExperienceList();
-    }
-
-    function updateExperience(index, field, value) {
-      resumeData.experiences[index][field] = value;
-    }
-
-    function removeExperience(index) {
-      resumeData.experiences.splice(index, 1);
-      renderExperienceList();
-    }
-
-    function renderEducationStep(container) {
-      container.innerHTML = `
-        <div class="bg-white rounded-2xl shadow-lg p-8 fade-in">
-          <div class="flex items-center justify-between mb-8">
-            <div>
-              <h2 class="text-3xl font-bold mb-2" style="color: #1e293b;">Education</h2>
-              <p style="color: #64748b;">Add your educational background</p>
-            </div>
-            <button onclick="addEducation()" class="btn-primary px-6 py-3 rounded-xl text-white font-bold">
-              + Add Education
-            </button>
-          </div>
-
-          <div id="educationList" class="space-y-6 mb-8"></div>
-
-          <div class="flex justify-between">
-            <button onclick="previousFormStep()" class="btn-secondary px-8 py-3 rounded-xl text-white font-bold">
-              ← Back
-            </button>
-            <button onclick="nextFormStep()" class="btn-primary px-8 py-3 rounded-xl text-white font-bold">
-              Continue to Skills →
-            </button>
-          </div>
-        </div>
-      `;
-
-      renderEducationList();
-    }
-
-    function renderEducationList() {
-      const list = document.getElementById('educationList');
-      
-      if (resumeData.education.length === 0) {
-        list.innerHTML = `
-          <div class="text-center py-12" style="color: #94a3b8;">
-            <div class="text-5xl mb-4">🎓</div>
-            <p class="text-lg">No education added yet</p>
-            <p class="text-sm mt-2">Click "Add Education" to get started</p>
-          </div>
-        `;
-        return;
-      }
-
-      list.innerHTML = resumeData.education.map((edu, index) => `
-        <div class="border-2 rounded-xl p-6 scale-in" style="border-color: #e2e8f0;">
-          <div class="flex justify-between items-start mb-4">
-            <h3 class="text-lg font-bold" style="color: #1e293b;">Education #${index + 1}</h3>
-            <button onclick="removeEducation(${index})" class="text-red-500 font-semibold hover:text-red-700">
-              Remove
-            </button>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" placeholder="Degree *" value="${edu.degree || ''}"
-                   onchange="updateEducation(${index}, 'degree', this.value)"
-                   class="px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;">
-            <input type="text" placeholder="School/University *" value="${edu.school || ''}"
-                   onchange="updateEducation(${index}, 'school', this.value)"
-                   class="px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;">
-            <input type="text" placeholder="Graduation Year" value="${edu.year || ''}"
-                   onchange="updateEducation(${index}, 'year', this.value)"
-                   class="px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;">
-            <input type="text" placeholder="GPA (optional)" value="${edu.gpa || ''}"
-                   onchange="updateEducation(${index}, 'gpa', this.value)"
-                   class="px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;">
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function addEducation() {
-      resumeData.education.push({
-        degree: '',
-        school: '',
-        year: '',
-        gpa: ''
-      });
-      renderEducationList();
-    }
-
-    function updateEducation(index, field, value) {
-      resumeData.education[index][field] = value;
-    }
-
-    function removeEducation(index) {
-      resumeData.education.splice(index, 1);
-      renderEducationList();
-    }
-
-    function renderSkillsStep(container) {
-      container.innerHTML = `
-        <div class="bg-white rounded-2xl shadow-lg p-8 fade-in">
-          <div class="mb-8">
-            <h2 class="text-3xl font-bold mb-2" style="color: #1e293b;">Skills & Languages</h2>
-            <p style="color: #64748b;">Highlight your key skills and language proficiencies</p>
-          </div>
-
-          <!-- Skills Section -->
-          <div class="mb-8">
-            <h3 class="text-xl font-bold mb-4" style="color: #1e293b;">Technical & Soft Skills</h3>
-            <div class="flex gap-2 mb-4">
-              <input type="text" id="skillInput" placeholder="Type a skill and press Enter..."
-                     class="flex-1 px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;"
-                     onkeypress="if(event.key==='Enter'){event.preventDefault();addSkill();}">
-              <button onclick="addSkill()" class="btn-primary px-6 py-3 rounded-xl text-white font-bold">
-                Add Skill
-              </button>
-            </div>
-            <div id="skillsList" class="flex flex-wrap gap-2"></div>
-          </div>
-
-          <!-- Languages Section -->
-          <div class="mb-8">
-            <h3 class="text-xl font-bold mb-4" style="color: #1e293b;">Languages</h3>
-            <div class="flex gap-2 mb-4">
-              <input type="text" id="languageInput" placeholder="Language (e.g., English - Fluent)"
-                     class="flex-1 px-4 py-3 border-2 rounded-xl" style="border-color: #e2e8f0;"
-                     onkeypress="if(event.key==='Enter'){event.preventDefault();addLanguage();}">
-              <button onclick="addLanguage()" class="btn-primary px-6 py-3 rounded-xl text-white font-bold">
-                Add Language
-              </button>
-            </div>
-            <div id="languagesList" class="flex flex-wrap gap-2"></div>
-          </div>
-
-          <div class="flex justify-between">
-            <button onclick="previousFormStep()" class="btn-secondary px-8 py-3 rounded-xl text-white font-bold">
-              ← Back
-            </button>
-            <button onclick="nextFormStep()" class="btn-primary px-8 py-3 rounded-xl text-white font-bold">
-              Preview Resume →
-            </button>
-          </div>
-        </div>
-      `;
-
-      renderSkillsList();
-      renderLanguagesList();
-    }
-
-    function renderSkillsList() {
-      const list = document.getElementById('skillsList');
-      
-      if (resumeData.skills.length === 0) {
-        list.innerHTML = '<p style="color: #94a3b8;">No skills added yet</p>';
-        return;
-      }
-
-      list.innerHTML = resumeData.skills.map((skill, index) => `
-        <div class="skill-badge" style="background: #eff6ff; color: #3b82f6; border: 2px solid #dbeafe;">
-          <span>${skill}</span>
-          <button onclick="removeSkill(${index})" style="color: #3b82f6;">×</button>
-        </div>
-      `).join('');
-    }
-
-    function addSkill() {
-      const input = document.getElementById('skillInput');
-      const skill = input.value.trim();
-      
-      if (skill && !resumeData.skills.includes(skill)) {
-        resumeData.skills.push(skill);
-        input.value = '';
-        renderSkillsList();
-      }
-    }
-
-    function removeSkill(index) {
-      resumeData.skills.splice(index, 1);
-      renderSkillsList();
-    }
-
-    function renderLanguagesList() {
-      const list = document.getElementById('languagesList');
-      
-      if (resumeData.languages.length === 0) {
-        list.innerHTML = '<p style="color: #94a3b8;">No languages added yet</p>';
-        return;
-      }
-
-      list.innerHTML = resumeData.languages.map((lang, index) => `
-        <div class="skill-badge" style="background: #f0fdf4; color: #059669; border: 2px solid #d1fae5;">
-          <span>${lang}</span>
-          <button onclick="removeLanguage(${index})" style="color: #059669;">×</button>
-        </div>
-      `).join('');
-    }
-
-    function addLanguage() {
-      const input = document.getElementById('languageInput');
-      const language = input.value.trim();
-      
-      if (language && !resumeData.languages.includes(language)) {
-        resumeData.languages.push(language);
-        input.value = '';
-        renderLanguagesList();
-      }
-    }
-
-    function removeLanguage(index) {
-      resumeData.languages.splice(index, 1);
-      renderLanguagesList();
-    }
-
-    function renderPreviewStep(container) {
-      const resumeHTML = generateResumeHTML();
-      
-      container.innerHTML = `
-        <div class="space-y-6 fade-in">
-          <div class="bg-white rounded-2xl shadow-lg p-8">
-            <div class="flex items-center justify-between mb-8">
-              <div>
-                <h2 class="text-3xl font-bold mb-2" style="color: #1e293b;">Your Resume is Ready!</h2>
-                <p style="color: #64748b;">Review your resume and download when ready</p>
-              </div>
-              <button onclick="downloadResumePDF()" class="btn-primary px-8 py-4 rounded-xl text-white font-bold text-lg">
-                📥 Download PDF
-              </button>
-            </div>
-
-            <div class="cv-preview-container rounded-2xl p-8" style="border: 2px solid #e2e8f0;">
-              <div id="resumePreview"></div>
-            </div>
-          </div>
-
-          <div class="flex justify-between">
-            <button onclick="previousFormStep()" class="btn-secondary px-8 py-3 rounded-xl text-white font-bold">
-              ← Edit Resume
-            </button>
-            <button onclick="downloadResumePDF()" class="btn-primary px-8 py-3 rounded-xl text-white font-bold">
-              📥 Download PDF
-            </button>
-          </div>
-        </div>
-      `;
-
-      document.getElementById('resumePreview').innerHTML = resumeHTML;
-    }
-
-    function generateResumeHTML() {
-      const template = templates.find(t => t.id === selectedTemplate);
-      const data = resumeData.personal;
-      const color = template.color;
-
-      return `
-        <div style="max-width: 850px; margin: 0 auto; font-family: 'Arial', sans-serif; color: #1e293b; line-height: 1.6;">
-          <!-- Header -->
-          <div style="background: linear-gradient(135deg, ${color}, ${adjustBrightness(color, -30)}); color: white; padding: 48px; text-align: center; border-radius: 12px 12px 0 0;">
-            <h1 style="margin: 0 0 8px; font-size: 42px; font-weight: 700; letter-spacing: -1px;">${data.fullName || 'Your Name'}</h1>
-            <p style="margin: 0 0 16px; font-size: 22px; opacity: 0.95; font-weight: 500;">${data.jobTitle || 'Job Title'}</p>
-            <div style="font-size: 15px; opacity: 0.9; line-height: 1.8;">
-              ${data.email ? `📧 ${data.email}` : ''} ${data.phone ? `• 📱 ${data.phone}` : ''} ${data.city ? `• 📍 ${data.city}` : ''}
-              ${data.linkedin ? `<br>🔗 ${data.linkedin}` : ''}
-            </div>
-          </div>
-
-          <div style="background: white; padding: 48px; border-left: 4px solid ${color}; border-right: 4px solid ${color};">
-            <!-- Summary -->
-            ${data.summary ? `
-              <div style="margin-bottom: 40px;">
-                <h2 style="color: ${color}; font-size: 24px; margin: 0 0 16px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 3px solid ${color}; padding-bottom: 8px;">Professional Summary</h2>
-                <p style="margin: 0; color: #475569; text-align: justify; font-size: 15px; line-height: 1.7;">${data.summary}</p>
-              </div>
-            ` : ''}
-
-            <!-- Experience -->
-            ${resumeData.experiences.length > 0 ? `
-              <div style="margin-bottom: 40px;">
-                <h2 style="color: ${color}; font-size: 24px; margin: 0 0 24px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 3px solid ${color}; padding-bottom: 8px;">Work Experience</h2>
-                ${resumeData.experiences.map(exp => `
-                  <div style="margin-bottom: 28px; padding-left: 24px; border-left: 4px solid ${color};">
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
-                      <h3 style="margin: 0; font-size: 20px; color: #1e293b; font-weight: 700;">${exp.title}</h3>
-                      <span style="color: #64748b; font-size: 14px; white-space: nowrap; font-weight: 500;">${exp.startDate} - ${exp.endDate}</span>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-gray-800">${template.name}</h3>
+                            <span class="text-xs bg-${template.free ? 'green' : 'yellow'}-100 text-${template.free ? 'green' : 'yellow'}-700 px-2 py-1 rounded-full">
+                                ${template.free ? 'Gratis' : 'Premium'}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">Template ${template.category.toLowerCase()} untuk profesional</p>
+                        <button class="${template.free ? 'bg-purple-600 hover:bg-purple-700' : 'bg-gradient-to-r from-yellow-500 to-yellow-600'} w-full text-white py-2 rounded-lg transition font-medium">
+                            ${template.free ? 'Gunakan Template' : 'Upgrade ke Premium'}
+                        </button>
                     </div>
-                    <p style="margin: 4px 0 12px; color: ${color}; font-weight: 600; font-size: 17px;">${exp.company}</p>
-                    <p style="margin: 0; color: #475569; text-align: justify; font-size: 15px; line-height: 1.7;">${exp.description}</p>
-                  </div>
-                `).join('')}
-              </div>
-            ` : ''}
-
-            <!-- Education -->
-            ${resumeData.education.length > 0 ? `
-              <div style="margin-bottom: 40px;">
-                <h2 style="color: ${color}; font-size: 24px; margin: 0 0 24px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 3px solid ${color}; padding-bottom: 8px;">Education</h2>
-                ${resumeData.education.map(edu => `
-                  <div style="margin-bottom: 24px; padding-left: 24px; border-left: 4px solid ${color};">
-                    <div style="display: flex; justify-content: space-between; align-items: start;">
-                      <h3 style="margin: 0; font-size: 20px; color: #1e293b; font-weight: 700;">${edu.degree}</h3>
-                      <span style="color: #64748b; font-size: 14px; font-weight: 500;">${edu.year}</span>
-                    </div>
-                    <p style="margin: 4px 0; color: ${color}; font-weight: 600; font-size: 17px;">${edu.school}</p>
-                    ${edu.gpa ? `<p style="margin: 4px 0; color: #64748b; font-size: 15px;">GPA: ${edu.gpa}</p>` : ''}
-                  </div>
-                `).join('')}
-              </div>
-            ` : ''}
-
-            <!-- Skills & Languages -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
-              ${resumeData.skills.length > 0 ? `
-                <div>
-                  <h2 style="color: ${color}; font-size: 24px; margin: 0 0 16px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 3px solid ${color}; padding-bottom: 8px;">Skills</h2>
-                  <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    ${resumeData.skills.map(skill => `
-                      <span style="background: ${color}20; color: ${color}; padding: 8px 16px; border-radius: 24px; font-size: 14px; font-weight: 600; border: 2px solid ${color}40;">${skill}</span>
-                    `).join('')}
-                  </div>
                 </div>
-              ` : ''}
+            `).join('');
+        }
 
-              ${resumeData.languages.length > 0 ? `
-                <div>
-                  <h2 style="color: ${color}; font-size: 24px; margin: 0 0 16px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 3px solid ${color}; padding-bottom: 8px;">Languages</h2>
-                  <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    ${resumeData.languages.map(lang => `
-                      <span style="background: ${color}20; color: ${color}; padding: 8px 16px; border-radius: 24px; font-size: 14px; font-weight: 600; border: 2px solid ${color}40;">${lang}</span>
-                    `).join('')}
-                  </div>
-                </div>
-              ` : ''}
-            </div>
-          </div>
+        function selectTemplate(templateName) {
+            const template = templates.find(t => t.name === templateName);
+            if (!template.free) {
+                showToast('Template Premium akan segera tersedia!', 'info');
+                return;
+            }
+            
+            document.getElementById('templatePilih').value = templateName;
+            showSection('buatCV');
+            showToast(`Template "${templateName}" dipilih!`);
+        }
 
-          <div style="background: ${color}; color: white; padding: 16px; text-align: center; font-size: 13px; border-radius: 0 0 12px 12px;">
-            Created with Resume Leader
-          </div>
-        </div>
-      `;
-    }
+        // ==================== FORM STEPS ====================
+        function updateStepIndicator(step) {
+            currentStep = step;
+            
+            // Reset all steps
+            for (let i = 1; i <= 4; i++) {
+                const circle = document.getElementById(`step${i}Circle`);
+                const text = document.getElementById(`step${i}Text`);
+                const line = document.getElementById(`line${i}`);
+                
+                if (i < step) {
+                    circle.className = 'w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold';
+                    circle.textContent = '✓';
+                    text.className = 'font-medium text-green-600';
+                    if (line) line.className = 'h-1 flex-1 bg-green-500 mx-4';
+                } else if (i === step) {
+                    circle.className = 'w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold';
+                    circle.textContent = i;
+                    text.className = 'font-medium text-purple-600';
+                    if (line) line.className = 'h-1 flex-1 bg-gray-200 mx-4';
+                } else {
+                    circle.className = 'w-10 h-10 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center font-bold';
+                    circle.textContent = i;
+                    text.className = 'font-medium text-gray-500';
+                    if (line) line.className = 'h-1 flex-1 bg-gray-200 mx-4';
+                }
+            }
+            
+            // Show/hide forms
+            document.getElementById('formInfoPersonal').classList.toggle('hidden', step !== 1);
+            document.getElementById('formPengalaman').classList.toggle('hidden', step !== 2);
+            document.getElementById('formPendidikan').classList.toggle('hidden', step !== 3);
+            document.getElementById('formKeahlian').classList.toggle('hidden', step !== 4);
+        }
 
-    async function downloadResumePDF() {
-      showToast('Generating your PDF, please wait...', 'info');
-
-      try {
-        const resumeHTML = generateResumeHTML();
-        
-        const tempContainer = document.createElement('div');
-        tempContainer.style.position = 'absolute';
-        tempContainer.style.left = '-9999px';
-        tempContainer.style.width = '210mm';
-        tempContainer.style.backgroundColor = 'white';
-        tempContainer.innerHTML = resumeHTML;
-        document.body.appendChild(tempContainer);
-
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        const canvas = await html2canvas(tempContainer, {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          backgroundColor: '#ffffff'
+        // Step 1: Personal Info
+        document.getElementById('formInfoPersonal').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            formData.personal = {
+                jenisInstansi: document.getElementById('jenisInstansi').value,
+                judulCV: document.getElementById('judulCV').value,
+                namaLengkap: document.getElementById('namaLengkap').value,
+                posisi: document.getElementById('posisi').value,
+                email: document.getElementById('email').value,
+                telepon: document.getElementById('telepon').value,
+                kota: document.getElementById('kota').value,
+                namaInstansi: document.getElementById('namaInstansi').value,
+                alamatInstansi: document.getElementById('alamatInstansi').value,
+                linkedin: document.getElementById('linkedin').value,
+                ringkasan: document.getElementById('ringkasan').value,
+                template: document.getElementById('templatePilih').value
+            };
+            
+            updateStepIndicator(2);
+            showToast('Data personal berhasil disimpan!');
         });
 
-        document.body.removeChild(tempContainer);
-
-        const { jsPDF } = window.jspdf;
-        const imgWidth = 210;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        // Step 2: Pengalaman Kerja
+        let pengalamanCount = 0;
         
-        const pdf = new jsPDF('portrait', 'mm', 'a4');
-        const imgData = canvas.toDataURL('image/png');
+        document.getElementById('btnTambahPengalaman').addEventListener('click', () => {
+            pengalamanCount++;
+            const id = `pengalaman-${pengalamanCount}`;
+            const container = document.getElementById('pengalamanList');
+            
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'border border-gray-200 rounded-lg p-6 bg-gray-50';
+            div.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-semibold text-gray-700">Pengalaman #${pengalamanCount}</h4>
+                    <button type="button" onclick="hapusPengalaman('${id}')" class="text-red-500 hover:text-red-700">
+                        🗑️ Hapus
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Posisi</label>
+                        <input type="text" data-field="posisi" required placeholder="Contoh: Senior Developer"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Perusahaan</label>
+                        <input type="text" data-field="perusahaan" required placeholder="Contoh: PT Tech Indonesia"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Mulai</label>
+                        <input type="month" data-field="mulai" required
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Selesai</label>
+                        <input type="month" data-field="selesai"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        <label class="flex items-center mt-2">
+                            <input type="checkbox" data-field="sedangBekerja" class="mr-2">
+                            <span class="text-sm text-gray-600">Masih bekerja di sini</span>
+                        </label>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Pekerjaan</label>
+                        <textarea data-field="deskripsi" rows="3" placeholder="Jelaskan tanggung jawab dan pencapaian kamu..."
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(div);
+        });
+
+        window.hapusPengalaman = function(id) {
+            document.getElementById(id).remove();
+        };
+
+        document.getElementById('formPengalaman').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            formData.pengalaman = [];
+            document.querySelectorAll('#pengalamanList > div').forEach(div => {
+                const data = {};
+                div.querySelectorAll('[data-field]').forEach(input => {
+                    const field = input.dataset.field;
+                    data[field] = input.type === 'checkbox' ? input.checked : input.value;
+                });
+                formData.pengalaman.push(data);
+            });
+            
+            updateStepIndicator(3);
+            showToast('Pengalaman kerja berhasil disimpan!');
+        });
+
+        document.getElementById('btnKembaliStep2').addEventListener('click', () => updateStepIndicator(1));
+        document.getElementById('btnLewatiPengalaman').addEventListener('click', () => updateStepIndicator(3));
+
+        // Step 3: Pendidikan
+        let pendidikanCount = 0;
         
-        let heightLeft = imgHeight;
-        let position = 0;
-        const pageHeight = 297;
+        document.getElementById('btnTambahPendidikan').addEventListener('click', () => {
+            pendidikanCount++;
+            const id = `pendidikan-${pendidikanCount}`;
+            const container = document.getElementById('pendidikanList');
+            
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'border border-gray-200 rounded-lg p-6 bg-gray-50';
+            div.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-semibold text-gray-700">Pendidikan #${pendidikanCount}</h4>
+                    <button type="button" onclick="hapusPendidikan('${id}')" class="text-red-500 hover:text-red-700">
+                        🗑️ Hapus
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Jenjang</label>
+                        <select data-field="jenjang" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            <option value="">-- Pilih Jenjang --</option>
+                            <option value="SMA/SMK">SMA/SMK</option>
+                            <option value="D3">D3</option>
+                            <option value="S1">S1</option>
+                            <option value="S2">S2</option>
+                            <option value="S3">S3</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Institusi</label>
+                        <input type="text" data-field="institusi" required placeholder="Contoh: Universitas Indonesia"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Jurusan</label>
+                        <input type="text" data-field="jurusan" required placeholder="Contoh: Teknik Informatika"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">IPK (opsional)</label>
+                        <input type="text" data-field="ipk" placeholder="Contoh: 3.75"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Mulai</label>
+                        <input type="number" data-field="tahunMulai" required placeholder="2018"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Lulus</label>
+                        <input type="number" data-field="tahunLulus" required placeholder="2022"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(div);
+        });
 
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        window.hapusPendidikan = function(id) {
+            document.getElementById(id).remove();
+        };
 
-        while (heightLeft > 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
+        document.getElementById('formPendidikan').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            formData.pendidikan = [];
+            document.querySelectorAll('#pendidikanList > div').forEach(div => {
+                const data = {};
+                div.querySelectorAll('[data-field]').forEach(input => {
+                    data[input.dataset.field] = input.value;
+                });
+                formData.pendidikan.push(data);
+            });
+            
+            updateStepIndicator(4);
+            showToast('Data pendidikan berhasil disimpan!');
+        });
+
+        document.getElementById('btnKembaliStep3').addEventListener('click', () => updateStepIndicator(2));
+        document.getElementById('btnLewatiPendidikan').addEventListener('click', () => updateStepIndicator(4));
+
+        // Step 4: Keahlian
+        function updateKeahlianDisplay() {
+            const container = document.getElementById('keahlianList');
+            const emptyState = document.getElementById('emptyStateKeahlian');
+            
+            if (formData.keahlian.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            container.innerHTML = formData.keahlian.map((skill, index) => `
+                <div class="bg-purple-100 text-purple-700 px-4 py-2 rounded-full flex items-center space-x-2">
+                    <span>${skill}</span>
+                    <button type="button" onclick="hapusKeahlian(${index})" class="hover:text-purple-900">
+                        ✕
+                    </button>
+                </div>
+            `).join('');
         }
 
-        const filename = `Resume_${resumeData.personal.fullName.replace(/\s+/g, '_')}.pdf`;
-        pdf.save(filename);
-        
-        showToast('✅ Resume downloaded successfully!', 'success');
-      } catch (error) {
-        console.error('PDF generation error:', error);
-        showToast('Failed to generate PDF. Please try again.', 'error');
-      }
-    }
-
-    function adjustBrightness(color, amount) {
-      const num = parseInt(color.replace('#', ''), 16);
-      const r = Math.max(0, Math.min(255, (num >> 16) + amount));
-      const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
-      const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
-      return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
-    }
-
-    function previousFormStep() {
-      if (currentFormStep > 0) {
-        currentFormStep--;
-        renderResumeBuilder();
-      }
-    }
-
-    function nextFormStep() {
-      if (currentFormStep < 4) {
-        currentFormStep++;
-        renderResumeBuilder();
-      }
-    }
-
-    function showSavedResumes() {
-      showToast('Saved resumes feature coming soon!', 'info');
-    }
-
-    function showToast(message, type) {
-      const existing = document.querySelector('.toast');
-      if (existing) existing.remove();
-
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      
-      let bgColor = '#3b82f6';
-      let icon = 'ℹ️';
-      
-      if (type === 'success') {
-        bgColor = '#10b981';
-        icon = '✅';
-      } else if (type === 'error') {
-        bgColor = '#ef4444';
-        icon = '❌';
-      } else if (type === 'info') {
-        bgColor = '#f59e0b';
-        icon = '⏳';
-      }
-      
-      toast.style.backgroundColor = bgColor;
-      toast.style.color = 'white';
-      toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
-      
-      document.body.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => toast.remove(), 300);
-      }, type === 'info' ? 4000 : 3000);
-    }
-
-    function updateUI() {
-      const app = document.getElementById('app');
-      const primaryColor = defaultConfig.primary_action_color;
-      const secondaryColor = defaultConfig.secondary_action_color;
-
-      const primaryBtns = app.querySelectorAll('.btn-primary');
-      primaryBtns.forEach(btn => {
-        btn.style.backgroundColor = primaryColor;
-        btn.onmouseenter = () => btn.style.backgroundColor = adjustBrightness(primaryColor, -20);
-        btn.onmouseleave = () => btn.style.backgroundColor = primaryColor;
-      });
-
-      const secondaryBtns = app.querySelectorAll('.btn-secondary');
-      secondaryBtns.forEach(btn => {
-        btn.style.backgroundColor = secondaryColor;
-        btn.onmouseenter = () => btn.style.backgroundColor = adjustBrightness(secondaryColor, -20);
-        btn.onmouseleave = () => btn.style.backgroundColor = secondaryColor;
-      });
-    }
-
-    // Element SDK Integration
-    async function onConfigChange(config) {
-      const titleElement = document.getElementById('mainTitle');
-      const subtitleElement = document.getElementById('mainSubtitle');
-      
-      if (titleElement) {
-        titleElement.textContent = config.main_title || defaultConfig.main_title;
-      }
-      if (subtitleElement) {
-        subtitleElement.textContent = config.main_subtitle || defaultConfig.main_subtitle;
-      }
-
-      updateUI();
-    }
-
-    const elementApi = {
-      defaultConfig: defaultConfig,
-      onConfigChange: onConfigChange,
-      mapToCapabilities: (config) => ({
-        recolorables: [
-          {
-            get: () => config.primary_action_color || defaultConfig.primary_action_color,
-            set: (value) => {
-              config.primary_action_color = value;
-              if (window.elementSdk) {
-                window.elementSdk.setConfig({ primary_action_color: value });
-              }
+        document.getElementById('btnTambahKeahlian').addEventListener('click', () => {
+            const input = document.getElementById('inputKeahlian');
+            const value = input.value.trim();
+            
+            if (value) {
+                formData.keahlian.push(value);
+                input.value = '';
+                updateKeahlianDisplay();
             }
-          },
-          {
-            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
-            set: (value) => {
-              config.secondary_action_color = value;
-              if (window.elementSdk) {
-                window.elementSdk.setConfig({ secondary_action_color: value });
-              }
+        });
+
+        document.getElementById('inputKeahlian').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('btnTambahKeahlian').click();
             }
-          }
-        ],
-        borderables: [],
-        fontEditable: undefined,
-        fontSizeable: undefined
-      }),
-      mapToEditPanelValues: (config) => new Map([
-        ['main_title', config.main_title || defaultConfig.main_title],
-        ['main_subtitle', config.main_subtitle || defaultConfig.main_subtitle]
-      ])
-    };
+        });
 
-    // Global Functions
-    window.filterTemplates = filterTemplates;
-    window.selectTemplate = selectTemplate;
-    window.startBuildingResume = startBuildingResume;
-    window.savePersonalInfo = savePersonalInfo;
-    window.addExperience = addExperience;
-    window.updateExperience = updateExperience;
-    window.removeExperience = removeExperience;
-    window.addEducation = addEducation;
-    window.updateEducation = updateEducation;
-    window.removeEducation = removeEducation;
-    window.addSkill = addSkill;
-    window.removeSkill = removeSkill;
-    window.addLanguage = addLanguage;
-    window.removeLanguage = removeLanguage;
-    window.previousFormStep = previousFormStep;
-    window.nextFormStep = nextFormStep;
-    window.downloadResumePDF = downloadResumePDF;
-    window.showSavedResumes = showSavedResumes;
-    window.renderTemplateSelection = renderTemplateSelection;
+        window.hapusKeahlian = function(index) {
+            formData.keahlian.splice(index, 1);
+            updateKeahlianDisplay();
+        };
 
-    // Initialize
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        if (window.elementSdk) {
-          window.elementSdk.init(elementApi);
+        function saveCV(status = 'published') {
+            const cv = {
+                id: currentEditingCV || Date.now().toString(),
+                ...formData,
+                template: formData.personal.template,
+                status: status,
+                createdAt: currentEditingCV ? cvList.find(c => c.id === currentEditingCV).createdAt : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (currentEditingCV) {
+                const index = cvList.findIndex(c => c.id === currentEditingCV);
+                cvList[index] = cv;
+            } else {
+                cvList.unshift(cv);
+            }
+            
+            saveData();
+            resetForm();
+            showSection('cvSaya');
+            showToast(`CV berhasil ${currentEditingCV ? 'diupdate' : 'dibuat'} dan ${status === 'draft' ? 'disimpan sebagai draft' : 'dipublish'}!`);
         }
-        initApp();
-      });
-    } else {
-      if (window.elementSdk) {
-        window.elementSdk.init(elementApi);
-      }
-      initApp();
-    }
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9aecc343c307b587',t:'MTc2NTg3MzIzOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+        document.getElementById('formKeahlian').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (formData.keahlian.length === 0) {
+                showToast('Tambahkan minimal 1 keahlian!', 'error');
+                return;
+            }
+            saveCV('published');
+        });
+
+        document.getElementById('btnSimpanDraft').addEventListener('click', () => {
+            saveCV('draft');
+        });
+
+        document.getElementById('btnKembaliStep4').addEventListener('click', () => updateStepIndicator(3));
+
+        // ==================== EDIT CV ====================
+        function editCV(cvId) {
+            const cv = cvList.find(c => c.id === cvId);
+            if (!cv) return;
+            
+            currentEditingCV = cvId;
+            formData = JSON.parse(JSON.stringify(cv));
+            
+            // Fill form step 1
+            document.getElementById('jenisInstansi').value = cv.personal.jenisInstansi || '';
+            document.getElementById('judulCV').value = cv.personal.judulCV;
+            document.getElementById('namaLengkap').value = cv.personal.namaLengkap;
+            document.getElementById('posisi').value = cv.personal.posisi;
+            document.getElementById('email').value = cv.personal.email;
+            document.getElementById('telepon').value = cv.personal.telepon;
+            document.getElementById('kota').value = cv.personal.kota;
+            document.getElementById('namaInstansi').value = cv.personal.namaInstansi || '';
+            document.getElementById('alamatInstansi').value = cv.personal.alamatInstansi || '';
+            document.getElementById('linkedin').value = cv.personal.linkedin || '';
+            document.getElementById('ringkasan').value = cv.personal.ringkasan;
+            document.getElementById('templatePilih').value = cv.personal.template;
+            
+            showSection('buatCV');
+            updateStepIndicator(1);
+            showToast('Mode edit lamaran aktif!', 'info');
+        }
+
+        window.editCV = editCV;
+
+        // ==================== PREVIEW CV ====================
+        function previewCV(cvId) {
+            const cv = cvList.find(c => c.id === cvId);
+            if (!cv) return;
+            
+            document.getElementById('previewTitle').textContent = `Preview: ${cv.personal.judulCV}`;
+            
+            const jenisLabel = {
+                'rumah_sakit': 'Rumah Sakit',
+                'perusahaan': 'Perusahaan Swasta',
+                'pemerintah': 'Instansi Pemerintah'
+            };
+            
+            const content = document.getElementById('previewContent');
+            content.innerHTML = `
+                <div class="max-w-4xl mx-auto">
+                    ${cv.personal.jenisInstansi ? `
+                    <!-- Surat Lamaran -->
+                    <div class="mb-8 p-8 border-2 border-gray-300 rounded-lg bg-white">
+                        <div class="text-right mb-6">
+                            <p class="text-gray-700">${cv.personal.kota}, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <p class="text-gray-700 mb-1">Kepada Yth.</p>
+                            <p class="font-semibold text-gray-900">${cv.personal.jenisInstansi === 'rumah_sakit' ? 'HRD ' + cv.personal.namaInstansi : cv.personal.jenisInstansi === 'pemerintah' ? 'Bapak/Ibu Pimpinan' : 'HRD Manager'}</p>
+                            <p class="font-semibold text-gray-900">${cv.personal.namaInstansi}</p>
+                            <p class="text-gray-700">${cv.personal.alamatInstansi}</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <p class="font-semibold text-gray-900">Perihal: Lamaran Pekerjaan sebagai ${cv.personal.posisi}</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <p class="text-gray-900">Dengan hormat,</p>
+                        </div>
+                        
+                        <div class="mb-4 text-justify leading-relaxed">
+                            <p class="text-gray-900 mb-3">
+                                Saya yang bertanda tangan di bawah ini:
+                            </p>
+                            <div class="ml-6 mb-3">
+                                <table class="text-gray-900">
+                                    <tr>
+                                        <td class="pr-4 py-1 align-top">Nama</td>
+                                        <td class="pr-2 align-top">:</td>
+                                        <td class="font-semibold">${cv.personal.namaLengkap}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pr-4 py-1 align-top">Email</td>
+                                        <td class="pr-2 align-top">:</td>
+                                        <td>${cv.personal.email}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pr-4 py-1 align-top">Telepon</td>
+                                        <td class="pr-2 align-top">:</td>
+                                        <td>${cv.personal.telepon}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pr-4 py-1 align-top">Alamat</td>
+                                        <td class="pr-2 align-top">:</td>
+                                        <td>${cv.personal.kota}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <p class="text-gray-900 mb-3">
+                                ${cv.personal.jenisInstansi === 'rumah_sakit' 
+                                    ? `Dengan ini saya mengajukan lamaran pekerjaan untuk posisi <strong>${cv.personal.posisi}</strong> di ${cv.personal.namaInstansi} yang Bapak/Ibu pimpin. Saya memiliki dedikasi tinggi dalam memberikan pelayanan kesehatan yang berkualitas kepada pasien.`
+                                    : cv.personal.jenisInstansi === 'pemerintah'
+                                    ? `Dengan ini saya mengajukan lamaran untuk mengikuti seleksi calon pegawai pada posisi <strong>${cv.personal.posisi}</strong> di ${cv.personal.namaInstansi}. Saya memiliki komitmen untuk mengabdi dan melayani masyarakat dengan sepenuh hati.`
+                                    : `Dengan ini saya mengajukan lamaran pekerjaan untuk posisi <strong>${cv.personal.posisi}</strong> di perusahaan yang Bapak/Ibu pimpin. Saya yakin dapat memberikan kontribusi positif bagi perkembangan perusahaan.`
+                                }
+                            </p>
+                            <p class="text-gray-900 mb-3">${cv.personal.ringkasan}</p>
+                            <p class="text-gray-900 mb-3">
+                                Sebagai bahan pertimbangan, bersama ini saya lampirkan:
+                            </p>
+                            <ol class="ml-8 mb-3 text-gray-900 list-decimal">
+                                <li>Daftar Riwayat Hidup (CV)</li>
+                                <li>Fotocopy KTP</li>
+                                <li>Fotocopy Ijazah dan Transkrip Nilai</li>
+                                <li>Pas Foto terbaru</li>
+                                ${cv.personal.jenisInstansi === 'rumah_sakit' ? '<li>Fotocopy Sertifikat Kompetensi (jika ada)</li>' : ''}
+                                ${cv.personal.jenisInstansi === 'pemerintah' ? '<li>Fotocopy SKCK</li>' : ''}
+                                <li>Surat Pengalaman Kerja (jika ada)</li>
+                            </ol>
+                            <p class="text-gray-900 mb-3">
+                                Demikian surat lamaran ini saya buat dengan sebenar-benarnya. Besar harapan saya untuk dapat diterima dan bergabung ${cv.personal.jenisInstansi === 'rumah_sakit' ? 'di ' + cv.personal.namaInstansi : cv.personal.jenisInstansi === 'pemerintah' ? 'sebagai Aparatur Sipil Negara' : 'di perusahaan ini'}. Atas perhatian dan pertimbangannya, saya ucapkan terima kasih.
+                            </p>
+                        </div>
+                        
+                        <div class="mt-8 text-right">
+                            <p class="text-gray-900 mb-16">Hormat saya,</p>
+                            <p class="font-bold text-gray-900">${cv.personal.namaLengkap}</p>
+                        </div>
+                    </div>
+                    <div class="my-8 border-t-4 border-gray-300"></div>
+                    ` : ''}
+                    
+                    <!-- Header CV -->
+                    <div class="text-center mb-8 border-b-4 border-purple-600 pb-6">
+                        <h1 class="text-4xl font-bold text-gray-900 mb-2">${cv.personal.namaLengkap}</h1>
+                        <h2 class="text-2xl text-purple-600 mb-4">${cv.personal.posisi}</h2>
+                        <div class="flex justify-center space-x-6 text-gray-600 flex-wrap">
+                            <span>📧 ${cv.personal.email}</span>
+                            <span>📱 ${cv.personal.telepon}</span>
+                            <span>📍 ${cv.personal.kota}</span>
+                            ${cv.personal.linkedin ? `<span>🔗 ${cv.personal.linkedin}</span>` : ''}
+                        </div>
+                    </div>
+                    
+                    <!-- Ringkasan -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                            <span class="w-1 h-6 bg-purple-600 mr-3"></span>
+                            Ringkasan Profesional
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed">${cv.personal.ringkasan}</p>
+                    </div>
+                    
+                    <!-- Pengalaman -->
+                    ${cv.pengalaman && cv.pengalaman.length > 0 ? `
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                                <span class="w-1 h-6 bg-purple-600 mr-3"></span>
+                                Pengalaman Kerja
+                            </h3>
+                            <div class="space-y-6">
+                                ${cv.pengalaman.map(exp => `
+                                    <div class="border-l-4 border-purple-300 pl-4">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div>
+                                                <h4 class="font-bold text-lg text-gray-900">${exp.posisi}</h4>
+                                                <p class="text-purple-600 font-medium">${exp.perusahaan}</p>
+                                            </div>
+                                            <span class="text-gray-600 text-sm">
+                                                ${formatMonth(exp.mulai)} - ${exp.sedangBekerja ? 'Sekarang' : formatMonth(exp.selesai)}
+                                            </span>
+                                        </div>
+                                        ${exp.deskripsi ? `<p class="text-gray-700">${exp.deskripsi}</p>` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Pendidikan -->
+                    ${cv.pendidikan && cv.pendidikan.length > 0 ? `
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                                <span class="w-1 h-6 bg-purple-600 mr-3"></span>
+                                Pendidikan
+                            </h3>
+                            <div class="space-y-4">
+                                ${cv.pendidikan.map(edu => `
+                                    <div class="border-l-4 border-purple-300 pl-4">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <h4 class="font-bold text-lg text-gray-900">${edu.jenjang} ${edu.jurusan}</h4>
+                                                <p class="text-purple-600">${edu.institusi}</p>
+                                                ${edu.ipk ? `<p class="text-gray-600 text-sm">IPK: ${edu.ipk}</p>` : ''}
+                                            </div>
+                                            <span class="text-gray-600 text-sm">${edu.tahunMulai} - ${edu.tahunLulus}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Keahlian -->
+                    ${cv.keahlian && cv.keahlian.length > 0 ? `
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                                <span class="w-1 h-6 bg-purple-600 mr-3"></span>
+                                Keahlian
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                ${cv.keahlian.map(skill => `
+                                    <span class="bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-medium">${skill}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Footer -->
+                    <div class="text-center text-gray-500 text-sm border-t border-gray-200 pt-6 mt-8">
+                        <p>CV dibuat menggunakan Resume Leader • Template: ${cv.template}</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('btnEditFromPreview').onclick = () => editCV(cvId);
+            document.getElementById('btnDownloadPDF').onclick = () => downloadCV(cvId);
+            
+            showSection('preview');
+        }
+
+        window.previewCV = previewCV;
+
+        // ==================== DOWNLOAD CV ====================
+        function downloadCV(cvId) {
+            const cv = cvList.find(c => c.id === cvId);
+            if (!cv) return;
+            
+            showToast('Mempersiapkan download CV...', 'info');
+            
+            setTimeout(() => {
+                showToast(`CV "${cv.personal.judulCV}" berhasil didownload!`);
+            }, 1500);
+        }
+
+        window.downloadCV = downloadCV;
+
+        // ==================== UTILITIES ====================
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) return 'Hari ini';
+            if (diffDays === 1) return 'Kemarin';
+            if (diffDays < 7) return `${diffDays} hari lalu`;
+            if (diffDays < 30) return `${Math.floor(diffDays / 7)} minggu lalu`;
+            if (diffDays < 365) return `${Math.floor(diffDays / 30)} bulan lalu`;
+            return `${Math.floor(diffDays / 365)} tahun lalu`;
+        }
+
+        function formatMonth(monthString) {
+            if (!monthString) return '';
+            const [year, month] = monthString.split('-');
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+            return `${months[parseInt(month) - 1]} ${year}`;
+        }
+
+        function resetForm() {
+            currentEditingCV = null;
+            formData = { personal: {}, pengalaman: [], pendidikan: [], keahlian: [] };
+            
+            document.getElementById('formInfoPersonal').reset();
+            document.getElementById('pengalamanList').innerHTML = '';
+            document.getElementById('pendidikanList').innerHTML = '';
+            document.getElementById('keahlianList').innerHTML = '';
+            document.getElementById('emptyStateKeahlian').classList.remove('hidden');
+            
+            pengalamanCount = 0;
+            pendidikanCount = 0;
+            
+            updateStepIndicator(1);
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        
+        // Navigation
+        document.getElementById('btnDashboard').addEventListener('click', () => showSection('dashboard'));
+        document.getElementById('btnCVSaya').addEventListener('click', () => showSection('cvSaya'));
+        document.getElementById('btnTemplate').addEventListener('click', () => showSection('template'));
+        document.getElementById('btnLihatSemua').addEventListener('click', () => showSection('cvSaya'));
+        document.getElementById('btnLogoHome').addEventListener('click', () => showSection('dashboard'));
+        
+        // Buat CV Baru
+        document.getElementById('btnBuatCVBaru').addEventListener('click', () => {
+            resetForm();
+            showSection('buatCV');
+        });
+        document.getElementById('btnBuatCVBaru2').addEventListener('click', () => {
+            resetForm();
+            showSection('buatCV');
+        });
+        
+        document.querySelectorAll('.btn-buat-cv-empty').forEach(btn => {
+            btn.addEventListener('click', () => {
+                resetForm();
+                showSection('buatCV');
+            });
+        });
+        
+        // Kembali & Batal
+        document.getElementById('btnKembali').addEventListener('click', () => {
+            if (currentEditingCV) {
+                showSection('cvSaya');
+            } else {
+                showSection('dashboard');
+            }
+        });
+        
+        document.getElementById('btnBatalBuat').addEventListener('click', () => {
+            const confirmMsg = 'Yakin ingin membatalkan? Semua data yang belum disimpan akan hilang.';
+            const userConfirmed = confirm(confirmMsg);
+            if (userConfirmed) {
+                resetForm();
+                showSection(currentEditingCV ? 'cvSaya' : 'dashboard');
+            }
+        });
+        
+        document.getElementById('btnKembaliPreview').addEventListener('click', () => showSection('cvSaya'));
+        
+        // Filters
+        document.getElementById('searchCV').addEventListener('input', (e) => {
+            const search = e.target.value;
+            const status = document.getElementById('filterStatus').value;
+            const template = document.getElementById('filterTemplate').value;
+            renderCVList(search, status, template);
+        });
+        
+        document.getElementById('filterStatus').addEventListener('change', (e) => {
+            const search = document.getElementById('searchCV').value;
+            const status = e.target.value;
+            const template = document.getElementById('filterTemplate').value;
+            renderCVList(search, status, template);
+        });
+        
+        document.getElementById('filterTemplate').addEventListener('change', (e) => {
+            const search = document.getElementById('searchCV').value;
+            const status = document.getElementById('filterStatus').value;
+            const template = e.target.value;
+            renderCVList(search, status, template);
+        });
+        
+        // Template filters
+        document.querySelectorAll('.template-filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.template-filter-btn').forEach(b => {
+                    b.classList.remove('active', 'bg-purple-600', 'text-white');
+                    b.classList.add('bg-gray-100', 'text-gray-700');
+                });
+                
+                btn.classList.add('active', 'bg-purple-600', 'text-white');
+                btn.classList.remove('bg-gray-100', 'text-gray-700');
+                
+                const filter = btn.dataset.filter;
+                renderTemplates(filter);
+            });
+        });
+        
+        // Close menus when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('[onclick^="toggleCVMenu"]') && !e.target.closest('[id^="menu-"]')) {
+                document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+            }
+        });
+        
+        // ==================== INITIALIZATION ====================
+        loadData();
+        updateStats();
+        renderDashboard();
+        renderTemplates();
+        
+        // Auto-fill user name
+        const userName = document.getElementById('userName').textContent;
+        const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+        document.getElementById('userInitial').textContent = initials;
+        
+        console.log('✅ Resume Leader - Aplikasi siap digunakan!');
+        console.log('📊 Total CV:', cvList.length);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9aecfc2091bd14a6',t:'MTc2NTg3NTU2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
