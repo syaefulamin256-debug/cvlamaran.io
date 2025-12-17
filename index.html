@@ -109,12 +109,12 @@
         <p class="text-xs text-gray-500 hidden sm:block">Buat Lamaran Kerja Profesional</p>
        </div>
       </div><!-- Desktop Menu -->
-      <div class="hidden lg:flex items-center space-x-4"><button onclick="showSection('dashboard')" class="text-purple-600 hover:text-purple-700 font-semibold transition"> Dashboard </button> <button onclick="showSection('cv-list')" class="text-gray-600 hover:text-purple-600 font-medium transition"> Lamaran Saya </button>
+      <div class="hidden lg:flex items-center space-x-4"><button onclick="app.showSection('dashboard')" class="text-purple-600 hover:text-purple-700 font-semibold transition"> Dashboard </button> <button onclick="app.showSection('cv-list')" class="text-gray-600 hover:text-purple-600 font-medium transition"> Lamaran Saya </button>
        <div class="flex items-center space-x-2 bg-purple-100 px-4 py-2 rounded-lg">
         <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center"><span class="text-white font-semibold text-sm" id="userInitial">U</span>
         </div><span class="font-medium text-gray-700" id="userDisplayName">User</span>
-       </div><button onclick="logout()" class="text-red-600 hover:text-red-700 font-medium transition"> Keluar </button>
-      </div><!-- Mobile Menu Button --> <button onclick="toggleMobileMenu()" class="lg:hidden text-gray-600 hover:text-purple-600 p-2">
+       </div><button onclick="app.logout()" class="text-red-600 hover:text-red-700 font-medium transition"> Keluar </button>
+      </div><!-- Mobile Menu Button --> <button onclick="app.toggleMobileMenu()" class="lg:hidden text-gray-600 hover:text-purple-600 p-2">
        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
        </svg></button>
      </div><!-- Mobile Menu -->
@@ -123,7 +123,7 @@
        <div class="flex items-center space-x-2 bg-purple-100 px-4 py-2 rounded-lg">
         <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center"><span class="text-white font-semibold text-sm" id="userInitialMobile">U</span>
         </div><span class="font-medium text-gray-700" id="userDisplayNameMobile">User</span>
-       </div><button onclick="showSection('dashboard'); toggleMobileMenu();" class="text-left px-4 py-2 text-purple-600 hover:bg-purple-50 rounded-lg font-semibold transition"> 🏠 Dashboard </button> <button onclick="showSection('cv-list'); toggleMobileMenu();" class="text-left px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition"> 📄 Lamaran Saya </button> <button onclick="logout()" class="text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg font-medium transition"> 🚪 Keluar </button>
+       </div><button onclick="app.showSection('dashboard'); app.toggleMobileMenu();" class="text-left px-4 py-2 text-purple-600 hover:bg-purple-50 rounded-lg font-semibold transition"> 🏠 Dashboard </button> <button onclick="app.showSection('cv-list'); app.toggleMobileMenu();" class="text-left px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition"> 📄 Lamaran Saya </button> <button onclick="app.logout()" class="text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg font-medium transition"> 🚪 Keluar </button>
       </div>
      </div>
     </nav>
@@ -140,17 +140,17 @@
        </div><!-- Login Form -->
        <div id="loginForm">
         <h3 class="text-xl font-semibold text-gray-800 mb-6">Masuk ke Akun Anda</h3>
-        <form onsubmit="handleLogin(event)" class="space-y-4">
+        <form onsubmit="app.handleLogin(event)" class="space-y-4">
          <div><label class="block text-sm font-medium text-gray-700 mb-2">Username</label> <input type="text" id="loginUsername" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Masukkan username">
          </div><button type="submit" class="w-full btn-primary text-white px-6 py-3 rounded-lg font-semibold"> Masuk </button>
         </form>
         <div class="text-center mt-6">
-         <p class="text-gray-600">Belum punya akun? <button onclick="toggleAuthForm()" class="text-purple-600 hover:text-purple-700 font-semibold"> Daftar Sekarang </button></p>
+         <p class="text-gray-600">Belum punya akun? <button onclick="app.toggleAuthForm()" class="text-purple-600 hover:text-purple-700 font-semibold"> Daftar Sekarang </button></p>
         </div>
        </div><!-- Register Form -->
        <div id="registerForm" class="hidden">
         <h3 class="text-xl font-semibold text-gray-800 mb-6">Buat Akun Baru</h3>
-        <form onsubmit="handleRegister(event)" class="space-y-4">
+        <form onsubmit="app.handleRegister(event)" class="space-y-4">
          <div><label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap *</label> <input type="text" id="regFullName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Nama lengkap Anda">
          </div>
          <div><label class="block text-sm font-medium text-gray-700 mb-2">Username *</label> <input type="text" id="regUsername" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Pilih username unik">
@@ -159,7 +159,7 @@
          </div><button type="submit" class="w-full btn-primary text-white px-6 py-3 rounded-lg font-semibold"> Daftar </button>
         </form>
         <div class="text-center mt-6">
-         <p class="text-gray-600">Sudah punya akun? <button onclick="toggleAuthForm()" class="text-purple-600 hover:text-purple-700 font-semibold"> Masuk </button></p>
+         <p class="text-gray-600">Sudah punya akun? <button onclick="app.toggleAuthForm()" class="text-purple-600 hover:text-purple-700 font-semibold"> Masuk </button></p>
         </div>
        </div>
       </div>
@@ -169,7 +169,7 @@
        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
          <h2 class="text-xl sm:text-3xl font-bold mb-2">Selamat Datang Kembali! 👋</h2>
-         <p class="text-purple-100 mb-4 text-sm sm:text-base">Yuk lanjutkan membuat surat lamaran kerja profesional kamu</p><button onclick="buatLamaranBaru()" class="bg-white text-purple-600 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-purple-50 transition text-sm sm:text-base"> ➕ Buat Lamaran Baru </button>
+         <p class="text-purple-100 mb-4 text-sm sm:text-base">Yuk lanjutkan membuat surat lamaran kerja profesional kamu</p><button onclick="app.buatLamaranBaru()" class="bg-white text-purple-600 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-purple-50 transition text-sm sm:text-base"> ➕ Buat Lamaran Baru </button>
         </div>
         <div class="hidden md:block">
          <div class="text-right">
@@ -221,20 +221,20 @@
          📄
         </div>
         <h3 class="text-xl font-semibold text-gray-700 mb-2">Belum Ada Lamaran</h3>
-        <p class="text-gray-500 mb-4">Yuk mulai buat surat lamaran pertama kamu!</p><button onclick="buatLamaranBaru()" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold shadow-lg"> ➕ Buat Lamaran Pertama </button>
+        <p class="text-gray-500 mb-4">Yuk mulai buat surat lamaran pertama kamu!</p><button onclick="app.buatLamaranBaru()" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold shadow-lg"> ➕ Buat Lamaran Pertama </button>
        </div>
       </div>
      </section><!-- CV List Section -->
      <section id="sectionCVList" class="hidden animate-slide-in">
       <div class="flex justify-between items-center mb-6">
-       <h2 class="text-2xl font-bold text-gray-800">Semua Lamaran Kerja Saya</h2><button onclick="buatLamaranBaru()" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold"> ➕ Buat Lamaran Baru </button>
+       <h2 class="text-2xl font-bold text-gray-800">Semua Lamaran Kerja Saya</h2><button onclick="app.buatLamaranBaru()" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold"> ➕ Buat Lamaran Baru </button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="daftarSemuaCV"></div>
       <div id="emptyStateCVList" class="text-center py-16 hidden">
        <div class="text-6xl mb-4">
         📄
        </div>
-       <h3 class="text-xl font-semibold text-gray-700 mb-2">Belum Ada Lamaran</h3><button onclick="buatLamaranBaru()" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold"> ➕ Buat Lamaran Baru </button>
+       <h3 class="text-xl font-semibold text-gray-700 mb-2">Belum Ada Lamaran</h3><button onclick="app.buatLamaranBaru()" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold"> ➕ Buat Lamaran Baru </button>
       </div>
      </section><!-- Form Section -->
      <section id="sectionForm" class="hidden animate-slide-in">
@@ -268,8 +268,8 @@
          <div class="mt-4"><label class="block text-sm font-medium text-gray-700 mb-2">Ringkasan Profesional *</label> <textarea id="ringkasan" required rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="Ceritakan tentang diri Anda, pengalaman, dan motivasi melamar..."></textarea>
          </div>
         </div><!-- Buttons -->
-        <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center pt-4 gap-3"><button type="button" onclick="showSection('dashboard')" class="px-4 sm:px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base"> Batal </button>
-         <div class="flex flex-col sm:flex-row gap-2 sm:gap-3"><button type="button" onclick="simpanCV('draft')" class="px-4 sm:px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition text-sm sm:text-base"> Simpan sebagai Draft </button> <button type="button" onclick="simpanCV('published')" class="btn-primary text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base"> Simpan &amp; Publish </button> <button type="button" onclick="cetakPDF()" id="btnCetakPDF" class="hidden px-4 sm:px-6 py-2 sm:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold text-sm sm:text-base"> 📄 Cetak PDF </button>
+        <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center pt-4 gap-3"><button type="button" onclick="app.showSection('dashboard')" class="px-4 sm:px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base"> Batal </button>
+         <div class="flex flex-col sm:flex-row gap-2 sm:gap-3"><button type="button" onclick="app.simpanCV('draft')" class="px-4 sm:px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition text-sm sm:text-base"> Simpan sebagai Draft </button> <button type="button" onclick="app.simpanCV('published')" class="btn-primary text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base"> Simpan &amp; Publish </button> <button type="button" onclick="app.cetakPDF()" id="btnCetakPDF" class="hidden px-4 sm:px-6 py-2 sm:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold text-sm sm:text-base"> 📄 Cetak PDF </button>
          </div>
         </div>
        </form>
@@ -294,890 +294,893 @@
    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
     <h3 class="text-lg font-bold text-gray-800 mb-3">Hapus Lamaran?</h3>
     <p class="text-gray-600 mb-6">Apakah Anda yakin ingin menghapus lamaran ini? Tindakan ini tidak dapat dibatalkan.</p>
-    <div class="flex justify-end space-x-3"><button onclick="closeDeleteModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"> Batal </button> <button onclick="confirmDelete()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"> Hapus </button>
+    <div class="flex justify-end space-x-3"><button onclick="app.closeDeleteModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"> Batal </button> <button onclick="app.confirmDelete()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"> Hapus </button>
     </div>
    </div>
   </div><!-- PDF Preview (Hidden for printing) -->
   <div id="pdfPreview" style="position: absolute; left: -9999px; width: 210mm; background: white; padding: 20mm;"><!-- Content will be generated here -->
   </div>
   <script>
-        // ==================== SUPABASE CONFIG ====================
-        const SUPABASE_URL = 'https://ltekzxdvslnnkpkugaew.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0ZWt6eGR2c2xubmtwa3VnYWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4NzIxNDIsImV4cCI6MjA4MTQ0ODE0Mn0.j7g6LlYHw5xjQNyg8eRzZH1l72mnsX0exCDw9z9Wur0';
-        
-        // Initialize Supabase Client
-        let supabase = null;
-        let isSupabaseConfigured = false;
-        
-        // Safely initialize Supabase with error handling
-        function initSupabase() {
-            try {
-                if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    isSupabaseConfigured = true;
-                    console.log('✅ Supabase connected!');
-                    return true;
-                } else {
-                    console.warn('⚠️ Supabase library not loaded, using localStorage fallback');
+        // ==================== GLOBAL APP OBJECT ====================
+        const app = (function() {
+            // SUPABASE CONFIG
+            const SUPABASE_URL = 'https://ltekzxdvslnnkpkugaew.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0ZWt6eGR2c2xubmtwa3VnYWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4NzIxNDIsImV4cCI6MjA4MTQ0ODE0Mn0.j7g6LlYHw5xjQNyg8eRzZH1l72mnsX0exCDw9z9Wur0';
+            
+            let supabaseClient = null;
+            let isSupabaseConfigured = false;
+            
+            // LOCAL STORAGE KEYS
+            const STORAGE_KEYS = {
+                users: 'resume_leader_users',
+                cvApplications: 'resume_leader_cv_applications',
+                currentUserId: 'currentUserId'
+            };
+            
+            // State
+            let currentUser = null;
+            let cvList = [];
+            let editingCVId = null;
+            let deleteCVId = null;
+            
+            // ==================== INITIALIZATION ====================
+            function initSupabase() {
+                try {
+                    if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                        isSupabaseConfigured = true;
+                        console.log('✅ Supabase connected!');
+                        return true;
+                    } else {
+                        console.warn('⚠️ Supabase library not loaded, using localStorage fallback');
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('❌ Supabase initialization error:', error);
                     return false;
                 }
-            } catch (error) {
-                console.error('❌ Supabase initialization error:', error);
-                return false;
             }
-        }
-        
-        // ==================== LOCAL STORAGE FALLBACK ====================
-        const STORAGE_KEYS = {
-            users: 'resume_leader_users',
-            cvApplications: 'resume_leader_cv_applications',
-            currentUserId: 'currentUserId'
-        };
-        
-        const db = {
-            getUsers: () => {
-                try {
-                    return JSON.parse(localStorage.getItem(STORAGE_KEYS.users) || '[]');
-                } catch (e) {
-                    console.error('Error reading users:', e);
-                    return [];
-                }
-            },
-            setUsers: (users) => {
-                try {
-                    localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
-                } catch (e) {
-                    console.error('Error saving users:', e);
-                }
-            },
-            getCVs: () => {
-                try {
-                    return JSON.parse(localStorage.getItem(STORAGE_KEYS.cvApplications) || '[]');
-                } catch (e) {
-                    console.error('Error reading CVs:', e);
-                    return [];
-                }
-            },
-            setCVs: (cvs) => {
-                try {
-                    localStorage.setItem(STORAGE_KEYS.cvApplications, JSON.stringify(cvs));
-                } catch (e) {
-                    console.error('Error saving CVs:', e);
-                }
-            },
-            generateId: () => 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
-        };
-        
-        // Current user
-        let currentUser = null;
-        
-        let cvList = [];
-        let editingCVId = null;
-        let deleteCVId = null;
-        
-        // ==================== AUTHENTICATION ====================
-        
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            if (menu) {
-                menu.classList.toggle('hidden');
-            }
-        }
-        
-        function toggleAuthForm() {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            if (loginForm && registerForm) {
-                loginForm.classList.toggle('hidden');
-                registerForm.classList.toggle('hidden');
-            }
-        }
-        
-        async function handleRegister(event) {
-            event.preventDefault();
             
-            try {
-                showLoading('Mendaftarkan akun...');
+            // ==================== LOCAL STORAGE HELPERS ====================
+            const db = {
+                getUsers: () => {
+                    try {
+                        return JSON.parse(localStorage.getItem(STORAGE_KEYS.users) || '[]');
+                    } catch (e) {
+                        return [];
+                    }
+                },
+                setUsers: (users) => {
+                    try {
+                        localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
+                    } catch (e) {
+                        console.error('Error saving users:', e);
+                    }
+                },
+                getCVs: () => {
+                    try {
+                        return JSON.parse(localStorage.getItem(STORAGE_KEYS.cvApplications) || '[]');
+                    } catch (e) {
+                        return [];
+                    }
+                },
+                setCVs: (cvs) => {
+                    try {
+                        localStorage.setItem(STORAGE_KEYS.cvApplications, JSON.stringify(cvs));
+                    } catch (e) {
+                        console.error('Error saving CVs:', e);
+                    }
+                },
+                generateId: () => 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+            };
+            
+            // ==================== UI HELPERS ====================
+            function showLoading(text = 'Memproses...') {
+                const loadingText = document.getElementById('loadingText');
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingText) loadingText.textContent = text;
+                if (loadingOverlay) loadingOverlay.classList.add('active');
+            }
+            
+            function hideLoading() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) loadingOverlay.classList.remove('active');
+            }
+            
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                const colors = {
+                    success: 'bg-green-500',
+                    error: 'bg-red-500',
+                    info: 'bg-blue-500'
+                };
+                const icons = {
+                    success: '✅',
+                    error: '❌',
+                    info: 'ℹ️'
+                };
                 
-                const fullName = document.getElementById('regFullName').value.trim();
-                const username = document.getElementById('regUsername').value.toLowerCase().trim();
-                const email = document.getElementById('regEmail').value.trim() || null;
+                toast.className = `${colors[type]} text-white px-6 py-4 rounded-lg shadow-lg animate-fade-in flex items-center space-x-3`;
+                toast.innerHTML = `
+                    <span class="text-xl">${icons[type]}</span>
+                    <span class="font-medium">${message}</span>
+                `;
                 
-                // Validasi
-                if (!fullName || !username) {
-                    hideLoading();
-                    showToast('Nama lengkap dan username harus diisi!', 'error');
-                    return;
-                }
-                
-                if (username.length < 3) {
-                    hideLoading();
-                    showToast('Username minimal 3 karakter!', 'error');
-                    return;
-                }
-                
-                if (isSupabaseConfigured && supabase) {
-                    // Cek username sudah ada
-                    const { data: existing, error: checkError } = await supabase
-                        .from('users')
-                        .select('*')
-                        .eq('username', username)
-                        .maybeSingle();
+                const container = document.getElementById('toastContainer');
+                if (container) {
+                    container.appendChild(toast);
                     
-                    if (existing) {
+                    setTimeout(() => {
+                        toast.style.opacity = '0';
+                        toast.style.transition = 'all 0.3s ease';
+                        setTimeout(() => toast.remove(), 300);
+                    }, 3000);
+                }
+            }
+            
+            // ==================== AUTH FUNCTIONS ====================
+            function toggleMobileMenu() {
+                const menu = document.getElementById('mobileMenu');
+                if (menu) {
+                    menu.classList.toggle('hidden');
+                }
+            }
+            
+            function toggleAuthForm() {
+                const loginForm = document.getElementById('loginForm');
+                const registerForm = document.getElementById('registerForm');
+                if (loginForm && registerForm) {
+                    loginForm.classList.toggle('hidden');
+                    registerForm.classList.toggle('hidden');
+                }
+            }
+            
+            async function handleRegister(event) {
+                event.preventDefault();
+                
+                try {
+                    showLoading('Mendaftarkan akun...');
+                    
+                    const fullName = document.getElementById('regFullName').value.trim();
+                    const username = document.getElementById('regUsername').value.toLowerCase().trim();
+                    const email = document.getElementById('regEmail').value.trim() || null;
+                    
+                    if (!fullName || !username) {
                         hideLoading();
-                        showToast('Username sudah digunakan! Pilih username lain.', 'error');
+                        showToast('Nama lengkap dan username harus diisi!', 'error');
                         return;
                     }
                     
-                    // Generate ID
-                    const userId = db.generateId();
-                    
-                    // Insert user ke Supabase
-                    const { data, error } = await supabase
-                        .from('users')
-                        .insert([
-                            {
-                                id: userId,
-                                username: username,
-                                full_name: fullName,
-                                email: email,
-                                created_at: new Date().toISOString()
-                            }
-                        ])
-                        .select()
-                        .single();
-                    
-                    if (error) throw error;
-                    
-                    currentUser = data;
-                    localStorage.setItem(STORAGE_KEYS.currentUserId, data.id);
-                } else {
-                    // LocalStorage fallback
-                    const users = db.getUsers();
-                    const existing = users.find(u => u.username === username);
-                    
-                    if (existing) {
+                    if (username.length < 3) {
                         hideLoading();
-                        showToast('Username sudah digunakan!', 'error');
+                        showToast('Username minimal 3 karakter!', 'error');
                         return;
                     }
                     
-                    const userId = db.generateId();
-                    const newUser = {
-                        id: userId,
-                        username: username,
-                        full_name: fullName,
-                        email: email,
-                        created_at: new Date().toISOString()
-                    };
-                    
-                    users.push(newUser);
-                    db.setUsers(users);
-                    
-                    currentUser = newUser;
-                    localStorage.setItem(STORAGE_KEYS.currentUserId, newUser.id);
-                }
-                
-                hideLoading();
-                showToast(`Akun berhasil dibuat! Selamat datang ${fullName}! 🎉`, 'success');
-                
-                // Update UI
-                updateUserDisplay(currentUser);
-                
-                // Reset form
-                document.getElementById('regFullName').value = '';
-                document.getElementById('regUsername').value = '';
-                document.getElementById('regEmail').value = '';
-                
-                // Show main app
-                document.getElementById('sectionAuth').classList.add('hidden');
-                document.getElementById('mainHeader').classList.remove('hidden');
-                
-                await loadData();
-                showSection('dashboard');
-                
-            } catch (error) {
-                console.error('❌ Error registering:', error);
-                hideLoading();
-                showToast('Gagal mendaftar: ' + error.message, 'error');
-            }
-        }
-        
-        async function handleLogin(event) {
-            event.preventDefault();
-            
-            try {
-                showLoading('Memverifikasi akun...');
-                
-                const username = document.getElementById('loginUsername').value.toLowerCase().trim();
-                
-                let user = null;
-                
-                if (isSupabaseConfigured && supabase) {
-                    // Query dari Supabase
-                    const { data, error } = await supabase
-                        .from('users')
-                        .select('*')
-                        .eq('username', username)
-                        .maybeSingle();
-                    
-                    if (data) {
-                        user = data;
-                    }
-                } else {
-                    // LocalStorage fallback
-                    const users = db.getUsers();
-                    user = users.find(u => u.username === username);
-                }
-                
-                if (!user) {
-                    hideLoading();
-                    showToast('Username tidak ditemukan!', 'error');
-                    return;
-                }
-                
-                currentUser = user;
-                localStorage.setItem(STORAGE_KEYS.currentUserId, user.id);
-                
-                updateUserDisplay(user);
-                
-                hideLoading();
-                showToast(`Selamat datang, ${user.full_name}! 👋`, 'success');
-                
-                document.getElementById('sectionAuth').classList.add('hidden');
-                document.getElementById('mainHeader').classList.remove('hidden');
-                
-                await loadData();
-                showSection('dashboard');
-                
-            } catch (error) {
-                console.error('❌ Error logging in:', error);
-                hideLoading();
-                showToast('Gagal login: ' + error.message, 'error');
-            }
-        }
-        
-        function updateUserDisplay(user) {
-            const initial = user.full_name.charAt(0).toUpperCase();
-            const elements = [
-                'userInitial',
-                'userDisplayName',
-                'userInitialMobile',
-                'userDisplayNameMobile'
-            ];
-            
-            elements.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    if (id.includes('Initial')) {
-                        el.textContent = initial;
+                    if (isSupabaseConfigured && supabaseClient) {
+                        const { data: existing, error: checkError } = await supabaseClient
+                            .from('users')
+                            .select('*')
+                            .eq('username', username)
+                            .maybeSingle();
+                        
+                        if (existing) {
+                            hideLoading();
+                            showToast('Username sudah digunakan! Pilih username lain.', 'error');
+                            return;
+                        }
+                        
+                        const userId = db.generateId();
+                        
+                        const { data, error } = await supabaseClient
+                            .from('users')
+                            .insert([
+                                {
+                                    id: userId,
+                                    username: username,
+                                    full_name: fullName,
+                                    email: email,
+                                    created_at: new Date().toISOString()
+                                }
+                            ])
+                            .select()
+                            .single();
+                        
+                        if (error) throw error;
+                        
+                        currentUser = data;
+                        localStorage.setItem(STORAGE_KEYS.currentUserId, data.id);
                     } else {
-                        el.textContent = user.full_name;
+                        const users = db.getUsers();
+                        const existing = users.find(u => u.username === username);
+                        
+                        if (existing) {
+                            hideLoading();
+                            showToast('Username sudah digunakan!', 'error');
+                            return;
+                        }
+                        
+                        const userId = db.generateId();
+                        const newUser = {
+                            id: userId,
+                            username: username,
+                            full_name: fullName,
+                            email: email,
+                            created_at: new Date().toISOString()
+                        };
+                        
+                        users.push(newUser);
+                        db.setUsers(users);
+                        
+                        currentUser = newUser;
+                        localStorage.setItem(STORAGE_KEYS.currentUserId, newUser.id);
                     }
-                }
-            });
-        }
-        
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem(STORAGE_KEYS.currentUserId);
-            
-            document.getElementById('sectionAuth').classList.remove('hidden');
-            document.getElementById('mainHeader').classList.add('hidden');
-            document.getElementById('sectionDashboard').classList.add('hidden');
-            document.getElementById('sectionCVList').classList.add('hidden');
-            document.getElementById('sectionForm').classList.add('hidden');
-            
-            const loginInput = document.getElementById('loginUsername');
-            if (loginInput) loginInput.value = '';
-            
-            showToast('Anda telah keluar. Sampai jumpa! 👋', 'info');
-        }
-        
-        async function checkAutoLogin() {
-            const userId = localStorage.getItem(STORAGE_KEYS.currentUserId);
-            if (!userId) return false;
-            
-            try {
-                let user = null;
-                
-                if (isSupabaseConfigured && supabase) {
-                    const { data, error } = await supabase
-                        .from('users')
-                        .select('*')
-                        .eq('id', userId)
-                        .maybeSingle();
                     
-                    if (data) user = data;
-                } else {
-                    const users = db.getUsers();
-                    user = users.find(u => u.id === userId);
-                }
-                
-                if (user) {
-                    currentUser = user;
-                    updateUserDisplay(user);
+                    hideLoading();
+                    showToast(`Akun berhasil dibuat! Selamat datang ${fullName}! 🎉`, 'success');
+                    
+                    updateUserDisplay(currentUser);
+                    
+                    document.getElementById('regFullName').value = '';
+                    document.getElementById('regUsername').value = '';
+                    document.getElementById('regEmail').value = '';
                     
                     document.getElementById('sectionAuth').classList.add('hidden');
                     document.getElementById('mainHeader').classList.remove('hidden');
                     
                     await loadData();
                     showSection('dashboard');
-                    return true;
-                }
-            } catch (error) {
-                console.error('Auto login failed:', error);
-            }
-            return false;
-        }
-        
-        // ==================== LOADING ====================
-        function showLoading(text = 'Memproses...') {
-            const loadingText = document.getElementById('loadingText');
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            if (loadingText) loadingText.textContent = text;
-            if (loadingOverlay) loadingOverlay.classList.add('active');
-        }
-        
-        function hideLoading() {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            if (loadingOverlay) loadingOverlay.classList.remove('active');
-        }
-        
-        // ==================== TOAST ====================
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            const colors = {
-                success: 'bg-green-500',
-                error: 'bg-red-500',
-                info: 'bg-blue-500'
-            };
-            const icons = {
-                success: '✅',
-                error: '❌',
-                info: 'ℹ️'
-            };
-            
-            toast.className = `${colors[type]} text-white px-6 py-4 rounded-lg shadow-lg animate-fade-in flex items-center space-x-3`;
-            toast.innerHTML = `
-                <span class="text-xl">${icons[type]}</span>
-                <span class="font-medium">${message}</span>
-            `;
-            
-            const container = document.getElementById('toastContainer');
-            if (container) {
-                container.appendChild(toast);
-                
-                setTimeout(() => {
-                    toast.style.opacity = '0';
-                    toast.style.transition = 'all 0.3s ease';
-                    setTimeout(() => toast.remove(), 300);
-                }, 3000);
-            }
-        }
-        
-        // ==================== DATABASE OPERATIONS ====================
-        
-        async function loadData() {
-            try {
-                showLoading('Memuat data...');
-                
-                if (isSupabaseConfigured && supabase) {
-                    const { data, error } = await supabase
-                        .from('cv_applications')
-                        .select('*')
-                        .eq('user_id', currentUser.id)
-                        .order('updated_at', { ascending: false });
                     
-                    if (error) throw error;
-                    cvList = data || [];
-                } else {
-                    const allCVs = db.getCVs();
-                    cvList = allCVs
-                        .filter(cv => cv.user_id === currentUser.id)
-                        .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+                } catch (error) {
+                    console.error('❌ Error registering:', error);
+                    hideLoading();
+                    showToast('Gagal mendaftar: ' + error.message, 'error');
                 }
-                
-                updateStats();
-                renderDashboard();
-                renderCVList();
-                hideLoading();
-                
-                console.log('✅ Data loaded:', cvList.length, 'CV');
-            } catch (error) {
-                console.error('❌ Error loading data:', error);
-                hideLoading();
-                showToast('Gagal memuat data: ' + error.message, 'error');
             }
-        }
-        
-        async function simpanCV(status) {
-            try {
-                const form = document.getElementById('formCV');
-                if (!form.checkValidity()) {
-                    form.reportValidity();
-                    return;
-                }
+            
+            async function handleLogin(event) {
+                event.preventDefault();
                 
-                showLoading('Menyimpan data...');
-                
-                const cvData = {
-                    user_id: currentUser.id,
-                    cv_title: document.getElementById('judulCV').value,
-                    jenis_instansi: document.getElementById('jenisInstansi').value || null,
-                    nama_instansi: document.getElementById('namaInstansi').value,
-                    alamat_instansi: document.getElementById('alamatInstansi').value || null,
-                    full_name: document.getElementById('namaLengkap').value,
-                    position_applied: document.getElementById('posisi').value,
-                    email: document.getElementById('email').value,
-                    phone: document.getElementById('telepon').value,
-                    city: document.getElementById('kota').value,
-                    linkedin_url: document.getElementById('linkedin').value || null,
-                    professional_summary: document.getElementById('ringkasan').value,
-                    template_name: 'Modern Executive',
-                    status: status,
-                    updated_at: new Date().toISOString()
-                };
-                
-                if (isSupabaseConfigured && supabase) {
-                    if (editingCVId) {
-                        const { error } = await supabase
-                            .from('cv_applications')
-                            .update(cvData)
-                            .eq('id', editingCVId);
-                        
-                        if (error) throw error;
-                    } else {
-                        cvData.id = db.generateId();
-                        cvData.created_at = new Date().toISOString();
-                        
-                        const { error } = await supabase
-                            .from('cv_applications')
-                            .insert([cvData]);
-                        
-                        if (error) throw error;
-                    }
-                } else {
-                    const allCVs = db.getCVs();
+                try {
+                    showLoading('Memverifikasi akun...');
                     
-                    if (editingCVId) {
-                        const index = allCVs.findIndex(cv => cv.id === editingCVId);
-                        if (index !== -1) {
-                            allCVs[index] = { ...allCVs[index], ...cvData };
+                    const username = document.getElementById('loginUsername').value.toLowerCase().trim();
+                    
+                    let user = null;
+                    
+                    if (isSupabaseConfigured && supabaseClient) {
+                        const { data, error } = await supabaseClient
+                            .from('users')
+                            .select('*')
+                            .eq('username', username)
+                            .maybeSingle();
+                        
+                        if (data) {
+                            user = data;
                         }
                     } else {
-                        cvData.id = db.generateId();
-                        cvData.created_at = new Date().toISOString();
-                        allCVs.push(cvData);
+                        const users = db.getUsers();
+                        user = users.find(u => u.username === username);
                     }
                     
-                    db.setCVs(allCVs);
-                }
-                
-                hideLoading();
-                showToast(editingCVId ? 'Lamaran berhasil diupdate! ✅' : 'Lamaran berhasil disimpan! ✅');
-                
-                editingCVId = null;
-                form.reset();
-                await loadData();
-                showSection('dashboard');
-                
-            } catch (error) {
-                console.error('❌ Error saving CV:', error);
-                hideLoading();
-                showToast('Gagal menyimpan: ' + error.message, 'error');
-            }
-        }
-        
-        async function editCV(cvId) {
-            try {
-                showLoading('Memuat data CV...');
-                
-                let cv = null;
-                
-                if (isSupabaseConfigured && supabase) {
-                    const { data, error } = await supabase
-                        .from('cv_applications')
-                        .select('*')
-                        .eq('id', cvId)
-                        .single();
+                    if (!user) {
+                        hideLoading();
+                        showToast('Username tidak ditemukan!', 'error');
+                        return;
+                    }
                     
-                    if (error) throw error;
-                    cv = data;
-                } else {
-                    const allCVs = db.getCVs();
-                    cv = allCVs.find(c => c.id === cvId);
+                    currentUser = user;
+                    localStorage.setItem(STORAGE_KEYS.currentUserId, user.id);
+                    
+                    updateUserDisplay(user);
+                    
+                    hideLoading();
+                    showToast(`Selamat datang, ${user.full_name}! 👋`, 'success');
+                    
+                    document.getElementById('sectionAuth').classList.add('hidden');
+                    document.getElementById('mainHeader').classList.remove('hidden');
+                    
+                    await loadData();
+                    showSection('dashboard');
+                    
+                } catch (error) {
+                    console.error('❌ Error logging in:', error);
+                    hideLoading();
+                    showToast('Gagal login: ' + error.message, 'error');
                 }
-                
-                if (!cv) {
-                    throw new Error('CV tidak ditemukan');
-                }
-                
-                document.getElementById('judulCV').value = cv.cv_title;
-                document.getElementById('jenisInstansi').value = cv.jenis_instansi || '';
-                document.getElementById('namaInstansi').value = cv.nama_instansi;
-                document.getElementById('alamatInstansi').value = cv.alamat_instansi || '';
-                document.getElementById('namaLengkap').value = cv.full_name;
-                document.getElementById('posisi').value = cv.position_applied;
-                document.getElementById('email').value = cv.email;
-                document.getElementById('telepon').value = cv.phone;
-                document.getElementById('kota').value = cv.city;
-                document.getElementById('linkedin').value = cv.linkedin_url || '';
-                document.getElementById('ringkasan').value = cv.professional_summary;
-                
-                editingCVId = cvId;
-                document.getElementById('formTitle').textContent = 'Edit Lamaran';
-                
-                hideLoading();
-                showSection('form');
-                
-            } catch (error) {
-                console.error('❌ Error loading CV:', error);
-                hideLoading();
-                showToast('Gagal memuat data CV: ' + error.message, 'error');
             }
-        }
-        
-        function deleteCV(cvId) {
-            deleteCVId = cvId;
-            const modal = document.getElementById('deleteModal');
-            if (modal) modal.classList.add('active');
-        }
-        
-        function closeDeleteModal() {
-            const modal = document.getElementById('deleteModal');
-            if (modal) modal.classList.remove('active');
-            deleteCVId = null;
-        }
-        
-        async function confirmDelete() {
-            if (!deleteCVId) return;
             
-            try {
-                showLoading('Menghapus data...');
-                closeDeleteModal();
+            function updateUserDisplay(user) {
+                const initial = user.full_name.charAt(0).toUpperCase();
+                const elements = [
+                    'userInitial',
+                    'userDisplayName',
+                    'userInitialMobile',
+                    'userDisplayNameMobile'
+                ];
                 
-                if (isSupabaseConfigured && supabase) {
-                    const { error } = await supabase
-                        .from('cv_applications')
-                        .delete()
-                        .eq('id', deleteCVId);
-                    
-                    if (error) throw error;
-                } else {
-                    const allCVs = db.getCVs();
-                    const filtered = allCVs.filter(cv => cv.id !== deleteCVId);
-                    db.setCVs(filtered);
-                }
-                
-                hideLoading();
-                showToast('Lamaran berhasil dihapus! 🗑️');
-                
-                deleteCVId = null;
-                await loadData();
-                
-            } catch (error) {
-                console.error('❌ Error deleting CV:', error);
-                hideLoading();
-                showToast('Gagal menghapus: ' + error.message, 'error');
+                elements.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        if (id.includes('Initial')) {
+                            el.textContent = initial;
+                        } else {
+                            el.textContent = user.full_name;
+                        }
+                    }
+                });
             }
-        }
-        
-        // ==================== PDF EXPORT ====================
-        
-        async function cetakPDF() {
-            try {
-                // Check if required libraries are loaded
-                if (typeof window.jspdf === 'undefined' || typeof html2canvas === 'undefined') {
-                    showToast('Library PDF belum dimuat. Silakan refresh halaman.', 'error');
+            
+            function logout() {
+                currentUser = null;
+                localStorage.removeItem(STORAGE_KEYS.currentUserId);
+                
+                document.getElementById('sectionAuth').classList.remove('hidden');
+                document.getElementById('mainHeader').classList.add('hidden');
+                document.getElementById('sectionDashboard').classList.add('hidden');
+                document.getElementById('sectionCVList').classList.add('hidden');
+                document.getElementById('sectionForm').classList.add('hidden');
+                
+                const loginInput = document.getElementById('loginUsername');
+                if (loginInput) loginInput.value = '';
+                
+                showToast('Anda telah keluar. Sampai jumpa! 👋', 'info');
+            }
+            
+            async function checkAutoLogin() {
+                const userId = localStorage.getItem(STORAGE_KEYS.currentUserId);
+                if (!userId) return false;
+                
+                try {
+                    let user = null;
+                    
+                    if (isSupabaseConfigured && supabaseClient) {
+                        const { data, error } = await supabaseClient
+                            .from('users')
+                            .select('*')
+                            .eq('id', userId)
+                            .maybeSingle();
+                        
+                        if (data) user = data;
+                    } else {
+                        const users = db.getUsers();
+                        user = users.find(u => u.id === userId);
+                    }
+                    
+                    if (user) {
+                        currentUser = user;
+                        updateUserDisplay(user);
+                        
+                        document.getElementById('sectionAuth').classList.add('hidden');
+                        document.getElementById('mainHeader').classList.remove('hidden');
+                        
+                        await loadData();
+                        showSection('dashboard');
+                        return true;
+                    }
+                } catch (error) {
+                    console.error('Auto login failed:', error);
+                }
+                return false;
+            }
+            
+            // ==================== DATA OPERATIONS ====================
+            async function loadData() {
+                try {
+                    showLoading('Memuat data...');
+                    
+                    if (isSupabaseConfigured && supabaseClient) {
+                        const { data, error } = await supabaseClient
+                            .from('cv_applications')
+                            .select('*')
+                            .eq('user_id', currentUser.id)
+                            .order('updated_at', { ascending: false });
+                        
+                        if (error) throw error;
+                        cvList = data || [];
+                    } else {
+                        const allCVs = db.getCVs();
+                        cvList = allCVs
+                            .filter(cv => cv.user_id === currentUser.id)
+                            .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+                    }
+                    
+                    updateStats();
+                    renderDashboard();
+                    renderCVList();
+                    hideLoading();
+                    
+                    console.log('✅ Data loaded:', cvList.length, 'CV');
+                } catch (error) {
+                    console.error('❌ Error loading data:', error);
+                    hideLoading();
+                    showToast('Gagal memuat data: ' + error.message, 'error');
+                }
+            }
+            
+            async function simpanCV(status) {
+                try {
+                    const form = document.getElementById('formCV');
+                    if (!form.checkValidity()) {
+                        form.reportValidity();
+                        return;
+                    }
+                    
+                    showLoading('Menyimpan data...');
+                    
+                    const cvData = {
+                        user_id: currentUser.id,
+                        cv_title: document.getElementById('judulCV').value,
+                        jenis_instansi: document.getElementById('jenisInstansi').value || null,
+                        nama_instansi: document.getElementById('namaInstansi').value,
+                        alamat_instansi: document.getElementById('alamatInstansi').value || null,
+                        full_name: document.getElementById('namaLengkap').value,
+                        position_applied: document.getElementById('posisi').value,
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('telepon').value,
+                        city: document.getElementById('kota').value,
+                        linkedin_url: document.getElementById('linkedin').value || null,
+                        professional_summary: document.getElementById('ringkasan').value,
+                        template_name: 'Modern Executive',
+                        status: status,
+                        updated_at: new Date().toISOString()
+                    };
+                    
+                    if (isSupabaseConfigured && supabaseClient) {
+                        if (editingCVId) {
+                            const { error } = await supabaseClient
+                                .from('cv_applications')
+                                .update(cvData)
+                                .eq('id', editingCVId);
+                            
+                            if (error) throw error;
+                        } else {
+                            cvData.id = db.generateId();
+                            cvData.created_at = new Date().toISOString();
+                            
+                            const { error } = await supabaseClient
+                                .from('cv_applications')
+                                .insert([cvData]);
+                            
+                            if (error) throw error;
+                        }
+                    } else {
+                        const allCVs = db.getCVs();
+                        
+                        if (editingCVId) {
+                            const index = allCVs.findIndex(cv => cv.id === editingCVId);
+                            if (index !== -1) {
+                                allCVs[index] = { ...allCVs[index], ...cvData };
+                            }
+                        } else {
+                            cvData.id = db.generateId();
+                            cvData.created_at = new Date().toISOString();
+                            allCVs.push(cvData);
+                        }
+                        
+                        db.setCVs(allCVs);
+                    }
+                    
+                    hideLoading();
+                    showToast(editingCVId ? 'Lamaran berhasil diupdate! ✅' : 'Lamaran berhasil disimpan! ✅');
+                    
+                    editingCVId = null;
+                    form.reset();
+                    await loadData();
+                    showSection('dashboard');
+                    
+                } catch (error) {
+                    console.error('❌ Error saving CV:', error);
+                    hideLoading();
+                    showToast('Gagal menyimpan: ' + error.message, 'error');
+                }
+            }
+            
+            async function editCV(cvId) {
+                try {
+                    showLoading('Memuat data CV...');
+                    
+                    let cv = null;
+                    
+                    if (isSupabaseConfigured && supabaseClient) {
+                        const { data, error } = await supabaseClient
+                            .from('cv_applications')
+                            .select('*')
+                            .eq('id', cvId)
+                            .single();
+                        
+                        if (error) throw error;
+                        cv = data;
+                    } else {
+                        const allCVs = db.getCVs();
+                        cv = allCVs.find(c => c.id === cvId);
+                    }
+                    
+                    if (!cv) {
+                        throw new Error('CV tidak ditemukan');
+                    }
+                    
+                    document.getElementById('judulCV').value = cv.cv_title;
+                    document.getElementById('jenisInstansi').value = cv.jenis_instansi || '';
+                    document.getElementById('namaInstansi').value = cv.nama_instansi;
+                    document.getElementById('alamatInstansi').value = cv.alamat_instansi || '';
+                    document.getElementById('namaLengkap').value = cv.full_name;
+                    document.getElementById('posisi').value = cv.position_applied;
+                    document.getElementById('email').value = cv.email;
+                    document.getElementById('telepon').value = cv.phone;
+                    document.getElementById('kota').value = cv.city;
+                    document.getElementById('linkedin').value = cv.linkedin_url || '';
+                    document.getElementById('ringkasan').value = cv.professional_summary;
+                    
+                    editingCVId = cvId;
+                    document.getElementById('formTitle').textContent = 'Edit Lamaran';
+                    
+                    hideLoading();
+                    showSection('form');
+                    
+                } catch (error) {
+                    console.error('❌ Error loading CV:', error);
+                    hideLoading();
+                    showToast('Gagal memuat data CV: ' + error.message, 'error');
+                }
+            }
+            
+            function deleteCV(cvId) {
+                deleteCVId = cvId;
+                const modal = document.getElementById('deleteModal');
+                if (modal) modal.classList.add('active');
+            }
+            
+            function closeDeleteModal() {
+                const modal = document.getElementById('deleteModal');
+                if (modal) modal.classList.remove('active');
+                deleteCVId = null;
+            }
+            
+            async function confirmDelete() {
+                if (!deleteCVId) return;
+                
+                try {
+                    showLoading('Menghapus data...');
+                    closeDeleteModal();
+                    
+                    if (isSupabaseConfigured && supabaseClient) {
+                        const { error } = await supabaseClient
+                            .from('cv_applications')
+                            .delete()
+                            .eq('id', deleteCVId);
+                        
+                        if (error) throw error;
+                    } else {
+                        const allCVs = db.getCVs();
+                        const filtered = allCVs.filter(cv => cv.id !== deleteCVId);
+                        db.setCVs(filtered);
+                    }
+                    
+                    hideLoading();
+                    showToast('Lamaran berhasil dihapus! 🗑️');
+                    
+                    deleteCVId = null;
+                    await loadData();
+                    
+                } catch (error) {
+                    console.error('❌ Error deleting CV:', error);
+                    hideLoading();
+                    showToast('Gagal menghapus: ' + error.message, 'error');
+                }
+            }
+            
+            // ==================== PDF EXPORT ====================
+            async function cetakPDF() {
+                try {
+                    if (typeof window.jspdf === 'undefined' || typeof html2canvas === 'undefined') {
+                        showToast('Library PDF belum dimuat. Silakan refresh halaman.', 'error');
+                        return;
+                    }
+                    
+                    showLoading('Membuat PDF...');
+                    
+                    const judulCV = document.getElementById('judulCV').value;
+                    const jenisInstansi = document.getElementById('jenisInstansi').value;
+                    const namaInstansi = document.getElementById('namaInstansi').value;
+                    const alamatInstansi = document.getElementById('alamatInstansi').value;
+                    const namaLengkap = document.getElementById('namaLengkap').value;
+                    const posisi = document.getElementById('posisi').value;
+                    const email = document.getElementById('email').value;
+                    const telepon = document.getElementById('telepon').value;
+                    const kota = document.getElementById('kota').value;
+                    const linkedin = document.getElementById('linkedin').value;
+                    const ringkasan = document.getElementById('ringkasan').value;
+                    
+                    const jenisLabels = {
+                        'rumah_sakit': 'Rumah Sakit',
+                        'puskesmas': 'Puskesmas',
+                        'klinik': 'Klinik',
+                        'perusahaan': 'Perusahaan',
+                        'pemerintah': 'Pemerintah'
+                    };
+                    
+                    const pdfContent = `
+                        <div style="font-family: Arial, sans-serif; padding: 40px; line-height: 1.6;">
+                            <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #667eea; padding-bottom: 20px;">
+                                <h1 style="color: #667eea; margin: 0; font-size: 32px;">${namaLengkap}</h1>
+                                <p style="color: #666; font-size: 18px; margin: 10px 0;">${posisi}</p>
+                                <p style="color: #888; font-size: 14px; margin: 5px 0;">
+                                    ${email} | ${telepon} | ${kota}
+                                    ${linkedin ? `<br>${linkedin}` : ''}
+                                </p>
+                            </div>
+                            
+                            <div style="margin-bottom: 30px;">
+                                <h2 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; font-size: 20px;">
+                                    SURAT LAMARAN KERJA
+                                </h2>
+                                <p style="margin-top: 20px; color: #333;">
+                                    <strong>Kepada Yth.</strong><br>
+                                    ${jenisLabels[jenisInstansi] || 'Instansi'}: ${namaInstansi}<br>
+                                    ${alamatInstansi ? `${alamatInstansi}<br>` : ''}
+                                    <br>
+                                    Dengan hormat,
+                                </p>
+                            </div>
+                            
+                            <div style="margin-bottom: 30px;">
+                                <h3 style="color: #667eea; font-size: 18px;">Ringkasan Profesional</h3>
+                                <p style="color: #333; text-align: justify; white-space: pre-wrap;">${ringkasan}</p>
+                            </div>
+                            
+                            <div style="margin-top: 40px;">
+                                <p style="color: #333;">
+                                    Demikian surat lamaran ini saya buat dengan sebenar-benarnya. Besar harapan saya untuk dapat bergabung dan berkontribusi di ${namaInstansi}.
+                                </p>
+                                <p style="color: #333; margin-top: 30px;">
+                                    Hormat saya,<br><br><br>
+                                    <strong>${namaLengkap}</strong>
+                                </p>
+                            </div>
+                            
+                            <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #888; font-size: 12px;">
+                                Dibuat dengan Resume Leader - ${new Date().toLocaleDateString('id-ID')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    const preview = document.getElementById('pdfPreview');
+                    preview.innerHTML = pdfContent;
+                    preview.style.left = '0';
+                    preview.style.position = 'relative';
+                    
+                    const canvas = await html2canvas(preview, {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false,
+                        backgroundColor: '#ffffff'
+                    });
+                    
+                    preview.style.left = '-9999px';
+                    preview.style.position = 'absolute';
+                    
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                    
+                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                    
+                    const fileName = `Lamaran_${namaLengkap.replace(/\s+/g, '_')}_${namaInstansi.replace(/\s+/g, '_')}.pdf`;
+                    pdf.save(fileName);
+                    
+                    hideLoading();
+                    showToast('PDF berhasil diunduh! 📄', 'success');
+                    
+                } catch (error) {
+                    console.error('❌ Error creating PDF:', error);
+                    hideLoading();
+                    showToast('Gagal membuat PDF: ' + error.message, 'error');
+                }
+            }
+            
+            // ==================== UI FUNCTIONS ====================
+            function showSection(section) {
+                const sections = ['sectionDashboard', 'sectionCVList', 'sectionForm'];
+                sections.forEach(s => {
+                    const el = document.getElementById(s);
+                    if (el) el.classList.add('hidden');
+                });
+                
+                const btnPDF = document.getElementById('btnCetakPDF');
+                
+                if (section === 'dashboard') {
+                    document.getElementById('sectionDashboard').classList.remove('hidden');
+                    if (btnPDF) btnPDF.classList.add('hidden');
+                } else if (section === 'cv-list') {
+                    document.getElementById('sectionCVList').classList.remove('hidden');
+                    if (btnPDF) btnPDF.classList.add('hidden');
+                } else if (section === 'form') {
+                    document.getElementById('sectionForm').classList.remove('hidden');
+                    if (btnPDF) btnPDF.classList.remove('hidden');
+                }
+            }
+            
+            function buatLamaranBaru() {
+                editingCVId = null;
+                const form = document.getElementById('formCV');
+                if (form) form.reset();
+                const formTitle = document.getElementById('formTitle');
+                if (formTitle) formTitle.textContent = 'Buat Lamaran Baru';
+                showSection('form');
+            }
+            
+            function updateStats() {
+                const total = cvList.length;
+                const published = cvList.filter(cv => cv.status === 'published').length;
+                const draft = cvList.filter(cv => cv.status === 'draft').length;
+                const templates = new Set(cvList.map(cv => cv.jenis_instansi).filter(Boolean)).size;
+                
+                const statElements = {
+                    'totalCVCount': total,
+                    'statTotalCV': total,
+                    'statPublished': published,
+                    'statDraft': draft,
+                    'statTemplates': templates
+                };
+                
+                Object.entries(statElements).forEach(([id, value]) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = value;
+                });
+            }
+            
+            function renderDashboard() {
+                const container = document.getElementById('daftarCVTerbaru');
+                const emptyState = document.getElementById('emptyStateDashboard');
+                
+                if (!container || !emptyState) return;
+                
+                if (cvList.length === 0) {
+                    container.innerHTML = '';
+                    emptyState.classList.remove('hidden');
                     return;
                 }
                 
-                showLoading('Membuat PDF...');
+                emptyState.classList.add('hidden');
+                const recent = cvList.slice(0, 3);
                 
-                const judulCV = document.getElementById('judulCV').value;
-                const jenisInstansi = document.getElementById('jenisInstansi').value;
-                const namaInstansi = document.getElementById('namaInstansi').value;
-                const alamatInstansi = document.getElementById('alamatInstansi').value;
-                const namaLengkap = document.getElementById('namaLengkap').value;
-                const posisi = document.getElementById('posisi').value;
-                const email = document.getElementById('email').value;
-                const telepon = document.getElementById('telepon').value;
-                const kota = document.getElementById('kota').value;
-                const linkedin = document.getElementById('linkedin').value;
-                const ringkasan = document.getElementById('ringkasan').value;
-                
-                const jenisLabels = {
-                    'rumah_sakit': 'Rumah Sakit',
-                    'puskesmas': 'Puskesmas',
-                    'klinik': 'Klinik',
-                    'perusahaan': 'Perusahaan',
-                    'pemerintah': 'Pemerintah'
+                const icons = {
+                    'rumah_sakit': '🏥',
+                    'puskesmas': '🏥',
+                    'klinik': '⚕️',
+                    'perusahaan': '🏢',
+                    'pemerintah': '🏛️'
                 };
                 
-                const pdfContent = `
-                    <div style="font-family: Arial, sans-serif; padding: 40px; line-height: 1.6;">
-                        <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #667eea; padding-bottom: 20px;">
-                            <h1 style="color: #667eea; margin: 0; font-size: 32px;">${namaLengkap}</h1>
-                            <p style="color: #666; font-size: 18px; margin: 10px 0;">${posisi}</p>
-                            <p style="color: #888; font-size: 14px; margin: 5px 0;">
-                                ${email} | ${telepon} | ${kota}
-                                ${linkedin ? `<br>${linkedin}` : ''}
-                            </p>
-                        </div>
-                        
-                        <div style="margin-bottom: 30px;">
-                            <h2 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; font-size: 20px;">
-                                SURAT LAMARAN KERJA
-                            </h2>
-                            <p style="margin-top: 20px; color: #333;">
-                                <strong>Kepada Yth.</strong><br>
-                                ${jenisLabels[jenisInstansi] || 'Instansi'}: ${namaInstansi}<br>
-                                ${alamatInstansi ? `${alamatInstansi}<br>` : ''}
-                                <br>
-                                Dengan hormat,
-                            </p>
-                        </div>
-                        
-                        <div style="margin-bottom: 30px;">
-                            <h3 style="color: #667eea; font-size: 18px;">Ringkasan Profesional</h3>
-                            <p style="color: #333; text-align: justify; white-space: pre-wrap;">${ringkasan}</p>
-                        </div>
-                        
-                        <div style="margin-top: 40px;">
-                            <p style="color: #333;">
-                                Demikian surat lamaran ini saya buat dengan sebenar-benarnya. Besar harapan saya untuk dapat bergabung dan berkontribusi di ${namaInstansi}.
-                            </p>
-                            <p style="color: #333; margin-top: 30px;">
-                                Hormat saya,<br><br><br>
-                                <strong>${namaLengkap}</strong>
-                            </p>
-                        </div>
-                        
-                        <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #888; font-size: 12px;">
-                            Dibuat dengan Resume Leader - ${new Date().toLocaleDateString('id-ID')}
+                container.innerHTML = recent.map(cv => `
+                    <div class="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h4 class="font-semibold text-gray-800">${cv.cv_title}</h4>
+                                    <span class="bg-${cv.status === 'published' ? 'green' : 'yellow'}-100 text-${cv.status === 'published' ? 'green' : 'yellow'}-700 text-xs px-2 py-1 rounded-full">
+                                        ${cv.status === 'published' ? 'Published' : 'Draft'}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">${cv.full_name} - ${cv.position_applied}</p>
+                                <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                    <span>📅 ${formatDate(cv.updated_at)}</span>
+                                    ${cv.jenis_instansi ? `<span>${icons[cv.jenis_instansi]} ${cv.nama_instansi}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="app.editCV('${cv.id}')" class="text-blue-600 hover:text-blue-700 text-sm">✏️</button>
+                                <button onclick="app.deleteCV('${cv.id}')" class="text-red-600 hover:text-red-700 text-sm">🗑️</button>
+                            </div>
                         </div>
                     </div>
-                `;
-                
-                const preview = document.getElementById('pdfPreview');
-                preview.innerHTML = pdfContent;
-                preview.style.left = '0';
-                preview.style.position = 'relative';
-                
-                const canvas = await html2canvas(preview, {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                    backgroundColor: '#ffffff'
-                });
-                
-                preview.style.left = '-9999px';
-                preview.style.position = 'absolute';
-                
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                const imgData = canvas.toDataURL('image/png');
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                
-                const fileName = `Lamaran_${namaLengkap.replace(/\s+/g, '_')}_${namaInstansi.replace(/\s+/g, '_')}.pdf`;
-                pdf.save(fileName);
-                
-                hideLoading();
-                showToast('PDF berhasil diunduh! 📄', 'success');
-                
-            } catch (error) {
-                console.error('❌ Error creating PDF:', error);
-                hideLoading();
-                showToast('Gagal membuat PDF: ' + error.message, 'error');
-            }
-        }
-        
-        // ==================== UI FUNCTIONS ====================
-        
-        function showSection(section) {
-            const sections = ['sectionDashboard', 'sectionCVList', 'sectionForm'];
-            sections.forEach(s => {
-                const el = document.getElementById(s);
-                if (el) el.classList.add('hidden');
-            });
-            
-            const btnPDF = document.getElementById('btnCetakPDF');
-            
-            if (section === 'dashboard') {
-                document.getElementById('sectionDashboard').classList.remove('hidden');
-                if (btnPDF) btnPDF.classList.add('hidden');
-            } else if (section === 'cv-list') {
-                document.getElementById('sectionCVList').classList.remove('hidden');
-                if (btnPDF) btnPDF.classList.add('hidden');
-            } else if (section === 'form') {
-                document.getElementById('sectionForm').classList.remove('hidden');
-                if (btnPDF) btnPDF.classList.remove('hidden');
-            }
-        }
-        
-        function buatLamaranBaru() {
-            editingCVId = null;
-            const form = document.getElementById('formCV');
-            if (form) form.reset();
-            const formTitle = document.getElementById('formTitle');
-            if (formTitle) formTitle.textContent = 'Buat Lamaran Baru';
-            showSection('form');
-        }
-        
-        function updateStats() {
-            const total = cvList.length;
-            const published = cvList.filter(cv => cv.status === 'published').length;
-            const draft = cvList.filter(cv => cv.status === 'draft').length;
-            const templates = new Set(cvList.map(cv => cv.jenis_instansi).filter(Boolean)).size;
-            
-            const statElements = {
-                'totalCVCount': total,
-                'statTotalCV': total,
-                'statPublished': published,
-                'statDraft': draft,
-                'statTemplates': templates
-            };
-            
-            Object.entries(statElements).forEach(([id, value]) => {
-                const el = document.getElementById(id);
-                if (el) el.textContent = value;
-            });
-        }
-        
-        function renderDashboard() {
-            const container = document.getElementById('daftarCVTerbaru');
-            const emptyState = document.getElementById('emptyStateDashboard');
-            
-            if (!container || !emptyState) return;
-            
-            if (cvList.length === 0) {
-                container.innerHTML = '';
-                emptyState.classList.remove('hidden');
-                return;
+                `).join('');
             }
             
-            emptyState.classList.add('hidden');
-            const recent = cvList.slice(0, 3);
-            
-            const icons = {
-                'rumah_sakit': '🏥',
-                'puskesmas': '🏥',
-                'klinik': '⚕️',
-                'perusahaan': '🏢',
-                'pemerintah': '🏛️'
-            };
-            
-            container.innerHTML = recent.map(cv => `
-                <div class="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <div class="flex items-center space-x-3 mb-2">
-                                <h4 class="font-semibold text-gray-800">${cv.cv_title}</h4>
-                                <span class="bg-${cv.status === 'published' ? 'green' : 'yellow'}-100 text-${cv.status === 'published' ? 'green' : 'yellow'}-700 text-xs px-2 py-1 rounded-full">
-                                    ${cv.status === 'published' ? 'Published' : 'Draft'}
-                                </span>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">${cv.full_name} - ${cv.position_applied}</p>
-                            <div class="flex items-center space-x-4 text-xs text-gray-500">
-                                <span>📅 ${formatDate(cv.updated_at)}</span>
-                                ${cv.jenis_instansi ? `<span>${icons[cv.jenis_instansi]} ${cv.nama_instansi}</span>` : ''}
-                            </div>
+            function renderCVList() {
+                const container = document.getElementById('daftarSemuaCV');
+                const emptyState = document.getElementById('emptyStateCVList');
+                
+                if (!container || !emptyState) return;
+                
+                if (cvList.length === 0) {
+                    container.innerHTML = '';
+                    emptyState.classList.remove('hidden');
+                    return;
+                }
+                
+                emptyState.classList.add('hidden');
+                
+                const icons = {
+                    'rumah_sakit': '🏥',
+                    'puskesmas': '🏥',
+                    'klinik': '⚕️',
+                    'perusahaan': '🏢',
+                    'pemerintah': '🏛️'
+                };
+                
+                container.innerHTML = cvList.map(cv => `
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 card-hover">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-3xl">${icons[cv.jenis_instansi] || '📄'}</span>
+                            <span class="bg-${cv.status === 'published' ? 'green' : 'yellow'}-100 text-${cv.status === 'published' ? 'green' : 'yellow'}-700 text-xs px-2 py-1 rounded-full">
+                                ${cv.status === 'published' ? 'Published' : 'Draft'}
+                            </span>
                         </div>
+                        <h3 class="font-bold text-gray-800 mb-2">${cv.cv_title}</h3>
+                        <p class="text-sm text-gray-600 mb-1">${cv.position_applied}</p>
+                        <p class="text-sm text-gray-500 mb-4">${cv.nama_instansi}</p>
                         <div class="flex space-x-2">
-                            <button onclick="editCV('${cv.id}')" class="text-blue-600 hover:text-blue-700 text-sm">✏️</button>
-                            <button onclick="deleteCV('${cv.id}')" class="text-red-600 hover:text-red-700 text-sm">🗑️</button>
+                            <button onclick="app.editCV('${cv.id}')" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+                                ✏️ Edit
+                            </button>
+                            <button onclick="app.deleteCV('${cv.id}')" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm">
+                                🗑️
+                            </button>
                         </div>
                     </div>
-                </div>
-            `).join('');
-        }
-        
-        function renderCVList() {
-            const container = document.getElementById('daftarSemuaCV');
-            const emptyState = document.getElementById('emptyStateCVList');
-            
-            if (!container || !emptyState) return;
-            
-            if (cvList.length === 0) {
-                container.innerHTML = '';
-                emptyState.classList.remove('hidden');
-                return;
+                `).join('');
             }
             
-            emptyState.classList.add('hidden');
+            function formatDate(dateString) {
+                try {
+                    const date = new Date(dateString);
+                    const now = new Date();
+                    const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+                    
+                    if (diff === 0) return 'Hari ini';
+                    if (diff === 1) return 'Kemarin';
+                    if (diff < 7) return `${diff} hari lalu`;
+                    if (diff < 30) return `${Math.floor(diff / 7)} minggu lalu`;
+                    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                } catch (e) {
+                    return 'Tanggal tidak valid';
+                }
+            }
             
-            const icons = {
-                'rumah_sakit': '🏥',
-                'puskesmas': '🏥',
-                'klinik': '⚕️',
-                'perusahaan': '🏢',
-                'pemerintah': '🏛️'
-            };
-            
-            container.innerHTML = cvList.map(cv => `
-                <div class="bg-white border border-gray-200 rounded-lg p-6 card-hover">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-3xl">${icons[cv.jenis_instansi] || '📄'}</span>
-                        <span class="bg-${cv.status === 'published' ? 'green' : 'yellow'}-100 text-${cv.status === 'published' ? 'green' : 'yellow'}-700 text-xs px-2 py-1 rounded-full">
-                            ${cv.status === 'published' ? 'Published' : 'Draft'}
-                        </span>
-                    </div>
-                    <h3 class="font-bold text-gray-800 mb-2">${cv.cv_title}</h3>
-                    <p class="text-sm text-gray-600 mb-1">${cv.position_applied}</p>
-                    <p class="text-sm text-gray-500 mb-4">${cv.nama_instansi}</p>
-                    <div class="flex space-x-2">
-                        <button onclick="editCV('${cv.id}')" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
-                            ✏️ Edit
-                        </button>
-                        <button onclick="deleteCV('${cv.id}')" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm">
-                            🗑️
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function formatDate(dateString) {
-            try {
-                const date = new Date(dateString);
-                const now = new Date();
-                const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+            // ==================== INITIALIZATION ====================
+            async function init() {
+                console.log('🚀 Resume Leader - Starting initialization...');
                 
-                if (diff === 0) return 'Hari ini';
-                if (diff === 1) return 'Kemarin';
-                if (diff < 7) return `${diff} hari lalu`;
-                if (diff < 30) return `${Math.floor(diff / 7)} minggu lalu`;
-                return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-            } catch (e) {
-                return 'Tanggal tidak valid';
-            }
-        }
-        
-        // ==================== INITIALIZATION ====================
-        
-        // Wait for all scripts to load
-        window.addEventListener('load', async function() {
-            console.log('🚀 Resume Leader - Starting initialization...');
-            
-            // Initialize Supabase
-            initSupabase();
-            
-            // Check auto login
-            const loggedIn = await checkAutoLogin();
-            
-            if (!loggedIn) {
-                const authSection = document.getElementById('sectionAuth');
-                if (authSection) authSection.classList.remove('hidden');
+                initSupabase();
+                
+                const loggedIn = await checkAutoLogin();
+                
+                if (!loggedIn) {
+                    const authSection = document.getElementById('sectionAuth');
+                    if (authSection) authSection.classList.remove('hidden');
+                }
+                
+                console.log('✅ Resume Leader loaded successfully!');
             }
             
-            console.log('✅ Resume Leader loaded successfully!');
+            // Public API
+            return {
+                init,
+                toggleMobileMenu,
+                toggleAuthForm,
+                handleRegister,
+                handleLogin,
+                logout,
+                showSection,
+                buatLamaranBaru,
+                simpanCV,
+                editCV,
+                deleteCV,
+                closeDeleteModal,
+                confirmDelete,
+                cetakPDF
+            };
+        })();
+        
+        // Initialize on load
+        window.addEventListener('load', function() {
+            app.init();
         });
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9af2f54df714e785',t:'MTc2NTkzODIwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9af3052e754dea81',t:'MTc2NTkzODg1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
