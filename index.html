@@ -246,7 +246,7 @@
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div><label class="block text-sm font-medium text-gray-700 mb-2">Judul Lamaran *</label> <input type="text" id="judulCV" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Contoh: Lamaran Perawat RS Siloam">
           </div>
-          <div><label class="block text-sm font-medium text-gray-700 mb-2">Jenis Instansi *</label> <select id="jenisInstansi" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"> <option value="">Pilih jenis instansi</option> <option value="rumah_sakit">🏥 Rumah Sakit</option> <option value="perusahaan">🏢 Perusahaan</option> <option value="pemerintah">🏛️ Pemerintah</option> </select>
+          <div><label class="block text-sm font-medium text-gray-700 mb-2">Jenis Instansi *</label> <select id="jenisInstansi" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"> <option value="">Pilih jenis instansi</option> <option value="rumah_sakit">🏥 Rumah Sakit</option> <option value="puskesmas">🏥 Puskesmas</option> <option value="klinik">⚕️ Klinik</option> <option value="perusahaan">🏢 Perusahaan</option> <option value="pemerintah">🏛️ Pemerintah</option> </select>
           </div>
           <div><label class="block text-sm font-medium text-gray-700 mb-2">Nama Instansi *</label> <input type="text" id="namaInstansi" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="Contoh: RS Siloam Kebon Jeruk">
           </div>
@@ -910,6 +910,8 @@
                 
                 const jenisLabels = {
                     'rumah_sakit': 'Rumah Sakit',
+                    'puskesmas': 'Puskesmas',
+                    'klinik': 'Klinik',
                     'perusahaan': 'Perusahaan',
                     'pemerintah': 'Pemerintah'
                 };
@@ -1065,6 +1067,8 @@
             
             const icons = {
                 'rumah_sakit': '🏥',
+                'puskesmas': '🏥',
+                'klinik': '⚕️',
                 'perusahaan': '🏢',
                 'pemerintah': '🏛️'
             };
@@ -1110,6 +1114,8 @@
             
             const icons = {
                 'rumah_sakit': '🏥',
+                'puskesmas': '🏥',
+                'klinik': '⚕️',
                 'perusahaan': '🏢',
                 'pemerintah': '🏛️'
             };
@@ -1173,5 +1179,5 @@
             console.log('✅ Resume Leader loaded successfully!');
         });
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9af2ef525700e785',t:'MTc2NTkzNzk1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9af2f54df714e785',t:'MTc2NTkzODIwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
