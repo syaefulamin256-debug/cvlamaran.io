@@ -6,7 +6,7 @@
   <title>Resume Leader - Buat CV Online Gratis</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><!-- Supabase Client -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
         body {
@@ -91,14 +91,6 @@
         .modal.active {
             display: flex;
         }
-        
-        .supabase-config {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin: 1rem 0;
-        }
     </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
@@ -137,12 +129,7 @@
     </nav>
    </header><!-- Main Content -->
    <main class="flex-1 overflow-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><!-- Supabase Config Warning -->
-     <div id="supabaseWarning" class="supabase-config hidden">
-      <h3 class="font-bold text-yellow-800 mb-2">⚠️ Konfigurasi Supabase Diperlukan</h3>
-      <p class="text-sm text-yellow-700 mb-2">Aplikasi belum terhubung ke Supabase. Silakan isi kredensial Supabase Anda di kode JavaScript:</p><code class="text-xs bg-yellow-100 p-2 block rounded"> const SUPABASE_URL = 'https://your-project.supabase.co';<br>
-        const SUPABASE_ANON_KEY = 'your-anon-key'; </code>
-     </div><!-- Login/Register Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><!-- Login/Register Section -->
      <section id="sectionAuth" class="flex items-center justify-center min-h-screen -mt-8">
       <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
        <div class="text-center mb-8">
@@ -315,26 +302,29 @@
   </div>
   <script>
         // ==================== SUPABASE CONFIG ====================
-        // 🔥 IMPORTANT: Ganti dengan kredensial Supabase kamu!
         const SUPABASE_URL = 'https://ltekzxdvslnnkpkugaew.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0ZWt6eGR2c2xubmtwa3VnYWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4NzIxNDIsImV4cCI6MjA4MTQ0ODE0Mn0.j7g6LlYHw5xjQNyg8eRzZH1l72mnsX0exCDw9z9Wur0';
         
         // Initialize Supabase Client
-        let supabase;
+        let supabase = null;
         let isSupabaseConfigured = false;
         
-        try {
-            if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY') {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                isSupabaseConfigured = true;
-                console.log('✅ Supabase connected!');
-            } else {
-                console.warn('⚠️ Supabase not configured. Please update SUPABASE_URL and SUPABASE_ANON_KEY.');
-                document.getElementById('supabaseWarning').classList.remove('hidden');
+        // Safely initialize Supabase with error handling
+        function initSupabase() {
+            try {
+                if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    isSupabaseConfigured = true;
+                    console.log('✅ Supabase connected!');
+                    return true;
+                } else {
+                    console.warn('⚠️ Supabase library not loaded, using localStorage fallback');
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Supabase initialization error:', error);
+                return false;
             }
-        } catch (error) {
-            console.error('❌ Supabase initialization error:', error);
-            document.getElementById('supabaseWarning').classList.remove('hidden');
         }
         
         // ==================== LOCAL STORAGE FALLBACK ====================
@@ -345,10 +335,36 @@
         };
         
         const db = {
-            getUsers: () => JSON.parse(localStorage.getItem(STORAGE_KEYS.users) || '[]'),
-            setUsers: (users) => localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users)),
-            getCVs: () => JSON.parse(localStorage.getItem(STORAGE_KEYS.cvApplications) || '[]'),
-            setCVs: (cvs) => localStorage.setItem(STORAGE_KEYS.cvApplications, JSON.stringify(cvs)),
+            getUsers: () => {
+                try {
+                    return JSON.parse(localStorage.getItem(STORAGE_KEYS.users) || '[]');
+                } catch (e) {
+                    console.error('Error reading users:', e);
+                    return [];
+                }
+            },
+            setUsers: (users) => {
+                try {
+                    localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
+                } catch (e) {
+                    console.error('Error saving users:', e);
+                }
+            },
+            getCVs: () => {
+                try {
+                    return JSON.parse(localStorage.getItem(STORAGE_KEYS.cvApplications) || '[]');
+                } catch (e) {
+                    console.error('Error reading CVs:', e);
+                    return [];
+                }
+            },
+            setCVs: (cvs) => {
+                try {
+                    localStorage.setItem(STORAGE_KEYS.cvApplications, JSON.stringify(cvs));
+                } catch (e) {
+                    console.error('Error saving CVs:', e);
+                }
+            },
             generateId: () => 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
         };
         
@@ -362,22 +378,23 @@
         // ==================== AUTHENTICATION ====================
         
         function toggleMobileMenu() {
-            document.getElementById('mobileMenu').classList.toggle('hidden');
+            const menu = document.getElementById('mobileMenu');
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
         }
         
         function toggleAuthForm() {
-            document.getElementById('loginForm').classList.toggle('hidden');
-            document.getElementById('registerForm').classList.toggle('hidden');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            if (loginForm && registerForm) {
+                loginForm.classList.toggle('hidden');
+                registerForm.classList.toggle('hidden');
+            }
         }
         
         async function handleRegister(event) {
             event.preventDefault();
-            
-            if (!isSupabaseConfigured) {
-                showToast('Supabase belum dikonfigurasi! Gunakan localStorage sementara.', 'error');
-                await handleRegisterLocalStorage();
-                return;
-            }
             
             try {
                 showLoading('Mendaftarkan akun...');
@@ -399,54 +416,74 @@
                     return;
                 }
                 
-                // Cek username sudah ada
-                const { data: existing, error: checkError } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('username', username)
-                    .single();
-                
-                if (existing) {
-                    hideLoading();
-                    showToast('Username sudah digunakan! Pilih username lain.', 'error');
-                    return;
+                if (isSupabaseConfigured && supabase) {
+                    // Cek username sudah ada
+                    const { data: existing, error: checkError } = await supabase
+                        .from('users')
+                        .select('*')
+                        .eq('username', username)
+                        .maybeSingle();
+                    
+                    if (existing) {
+                        hideLoading();
+                        showToast('Username sudah digunakan! Pilih username lain.', 'error');
+                        return;
+                    }
+                    
+                    // Generate ID
+                    const userId = db.generateId();
+                    
+                    // Insert user ke Supabase
+                    const { data, error } = await supabase
+                        .from('users')
+                        .insert([
+                            {
+                                id: userId,
+                                username: username,
+                                full_name: fullName,
+                                email: email,
+                                created_at: new Date().toISOString()
+                            }
+                        ])
+                        .select()
+                        .single();
+                    
+                    if (error) throw error;
+                    
+                    currentUser = data;
+                    localStorage.setItem(STORAGE_KEYS.currentUserId, data.id);
+                } else {
+                    // LocalStorage fallback
+                    const users = db.getUsers();
+                    const existing = users.find(u => u.username === username);
+                    
+                    if (existing) {
+                        hideLoading();
+                        showToast('Username sudah digunakan!', 'error');
+                        return;
+                    }
+                    
+                    const userId = db.generateId();
+                    const newUser = {
+                        id: userId,
+                        username: username,
+                        full_name: fullName,
+                        email: email,
+                        created_at: new Date().toISOString()
+                    };
+                    
+                    users.push(newUser);
+                    db.setUsers(users);
+                    
+                    currentUser = newUser;
+                    localStorage.setItem(STORAGE_KEYS.currentUserId, newUser.id);
                 }
-                
-                // Generate ID
-                const userId = db.generateId();
-                
-                // Insert user ke Supabase
-                const { data, error } = await supabase
-                    .from('users')
-                    .insert([
-                        {
-                            id: userId,
-                            username: username,
-                            full_name: fullName,
-                            email: email,
-                            created_at: new Date().toISOString()
-                        }
-                    ])
-                    .select()
-                    .single();
-                
-                if (error) throw error;
-                
-                console.log('✅ User registered in Supabase:', data);
                 
                 hideLoading();
                 showToast(`Akun berhasil dibuat! Selamat datang ${fullName}! 🎉`, 'success');
                 
-                // Auto login
-                currentUser = data;
-                localStorage.setItem(STORAGE_KEYS.currentUserId, data.id);
-                
                 // Update UI
-                const initial = data.full_name.charAt(0).toUpperCase();
-                document.getElementById('userInitial').textContent = initial;
-                document.getElementById('userDisplayName').textContent = data.full_name;
-                document.getElementById('userInitialMobile').textContent = initial;
-                document.getElementById('userDisplayNameMobile').textContent = data.full_name;
+                updateUserDisplay(currentUser);
                 
                 // Reset form
                 document.getElementById('regFullName').value = '';
@@ -467,102 +504,46 @@
             }
         }
         
-        async function handleRegisterLocalStorage() {
-            try {
-                showLoading('Mendaftarkan akun (localStorage)...');
-                
-                const fullName = document.getElementById('regFullName').value.trim();
-                const username = document.getElementById('regUsername').value.toLowerCase().trim();
-                const email = document.getElementById('regEmail').value.trim() || null;
-                
-                const users = db.getUsers();
-                const existing = users.find(u => u.username === username);
-                
-                if (existing) {
-                    hideLoading();
-                    showToast('Username sudah digunakan!', 'error');
-                    return;
-                }
-                
-                const userId = db.generateId();
-                const newUser = {
-                    id: userId,
-                    username: username,
-                    full_name: fullName,
-                    email: email,
-                    created_at: new Date().toISOString()
-                };
-                
-                users.push(newUser);
-                db.setUsers(users);
-                
-                currentUser = newUser;
-                localStorage.setItem(STORAGE_KEYS.currentUserId, newUser.id);
-                
-                const initial = newUser.full_name.charAt(0).toUpperCase();
-                document.getElementById('userInitial').textContent = initial;
-                document.getElementById('userDisplayName').textContent = newUser.full_name;
-                document.getElementById('userInitialMobile').textContent = initial;
-                document.getElementById('userDisplayNameMobile').textContent = newUser.full_name;
-                
-                document.getElementById('regFullName').value = '';
-                document.getElementById('regUsername').value = '';
-                document.getElementById('regEmail').value = '';
-                
-                hideLoading();
-                showToast(`Akun berhasil dibuat! Selamat datang ${fullName}! 🎉`, 'success');
-                
-                document.getElementById('sectionAuth').classList.add('hidden');
-                document.getElementById('mainHeader').classList.remove('hidden');
-                
-                await loadData();
-                showSection('dashboard');
-                
-            } catch (error) {
-                console.error('❌ Error:', error);
-                hideLoading();
-                showToast('Gagal mendaftar: ' + error.message, 'error');
-            }
-        }
-        
         async function handleLogin(event) {
             event.preventDefault();
-            
-            if (!isSupabaseConfigured) {
-                showToast('Supabase belum dikonfigurasi! Gunakan localStorage sementara.', 'error');
-                await handleLoginLocalStorage();
-                return;
-            }
             
             try {
                 showLoading('Memverifikasi akun...');
                 
                 const username = document.getElementById('loginUsername').value.toLowerCase().trim();
                 
-                // Query dari Supabase
-                const { data, error } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('username', username)
-                    .single();
+                let user = null;
                 
-                if (error || !data) {
+                if (isSupabaseConfigured && supabase) {
+                    // Query dari Supabase
+                    const { data, error } = await supabase
+                        .from('users')
+                        .select('*')
+                        .eq('username', username)
+                        .maybeSingle();
+                    
+                    if (data) {
+                        user = data;
+                    }
+                } else {
+                    // LocalStorage fallback
+                    const users = db.getUsers();
+                    user = users.find(u => u.username === username);
+                }
+                
+                if (!user) {
                     hideLoading();
                     showToast('Username tidak ditemukan!', 'error');
                     return;
                 }
                 
-                currentUser = data;
-                localStorage.setItem(STORAGE_KEYS.currentUserId, data.id);
+                currentUser = user;
+                localStorage.setItem(STORAGE_KEYS.currentUserId, user.id);
                 
-                const initial = data.full_name.charAt(0).toUpperCase();
-                document.getElementById('userInitial').textContent = initial;
-                document.getElementById('userDisplayName').textContent = data.full_name;
-                document.getElementById('userInitialMobile').textContent = initial;
-                document.getElementById('userDisplayNameMobile').textContent = data.full_name;
+                updateUserDisplay(user);
                 
                 hideLoading();
-                showToast(`Selamat datang, ${data.full_name}! 👋`, 'success');
+                showToast(`Selamat datang, ${user.full_name}! 👋`, 'success');
                 
                 document.getElementById('sectionAuth').classList.add('hidden');
                 document.getElementById('mainHeader').classList.remove('hidden');
@@ -577,43 +558,25 @@
             }
         }
         
-        async function handleLoginLocalStorage() {
-            try {
-                showLoading('Memverifikasi akun (localStorage)...');
-                
-                const username = document.getElementById('loginUsername').value.toLowerCase().trim();
-                const users = db.getUsers();
-                const user = users.find(u => u.username === username);
-                
-                if (!user) {
-                    hideLoading();
-                    showToast('Username tidak ditemukan!', 'error');
-                    return;
+        function updateUserDisplay(user) {
+            const initial = user.full_name.charAt(0).toUpperCase();
+            const elements = [
+                'userInitial',
+                'userDisplayName',
+                'userInitialMobile',
+                'userDisplayNameMobile'
+            ];
+            
+            elements.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (id.includes('Initial')) {
+                        el.textContent = initial;
+                    } else {
+                        el.textContent = user.full_name;
+                    }
                 }
-                
-                currentUser = user;
-                localStorage.setItem(STORAGE_KEYS.currentUserId, user.id);
-                
-                const initial = user.full_name.charAt(0).toUpperCase();
-                document.getElementById('userInitial').textContent = initial;
-                document.getElementById('userDisplayName').textContent = user.full_name;
-                document.getElementById('userInitialMobile').textContent = initial;
-                document.getElementById('userDisplayNameMobile').textContent = user.full_name;
-                
-                hideLoading();
-                showToast(`Selamat datang, ${user.full_name}! 👋`, 'success');
-                
-                document.getElementById('sectionAuth').classList.add('hidden');
-                document.getElementById('mainHeader').classList.remove('hidden');
-                
-                await loadData();
-                showSection('dashboard');
-                
-            } catch (error) {
-                console.error('❌ Error:', error);
-                hideLoading();
-                showToast('Gagal login: ' + error.message, 'error');
-            }
+            });
         }
         
         function logout() {
@@ -626,7 +589,8 @@
             document.getElementById('sectionCVList').classList.add('hidden');
             document.getElementById('sectionForm').classList.add('hidden');
             
-            document.getElementById('loginUsername').value = '';
+            const loginInput = document.getElementById('loginUsername');
+            if (loginInput) loginInput.value = '';
             
             showToast('Anda telah keluar. Sampai jumpa! 👋', 'info');
         }
@@ -638,12 +602,12 @@
             try {
                 let user = null;
                 
-                if (isSupabaseConfigured) {
+                if (isSupabaseConfigured && supabase) {
                     const { data, error } = await supabase
                         .from('users')
                         .select('*')
                         .eq('id', userId)
-                        .single();
+                        .maybeSingle();
                     
                     if (data) user = data;
                 } else {
@@ -653,11 +617,7 @@
                 
                 if (user) {
                     currentUser = user;
-                    const initial = user.full_name.charAt(0).toUpperCase();
-                    document.getElementById('userInitial').textContent = initial;
-                    document.getElementById('userDisplayName').textContent = user.full_name;
-                    document.getElementById('userInitialMobile').textContent = initial;
-                    document.getElementById('userDisplayNameMobile').textContent = user.full_name;
+                    updateUserDisplay(user);
                     
                     document.getElementById('sectionAuth').classList.add('hidden');
                     document.getElementById('mainHeader').classList.remove('hidden');
@@ -674,12 +634,15 @@
         
         // ==================== LOADING ====================
         function showLoading(text = 'Memproses...') {
-            document.getElementById('loadingText').textContent = text;
-            document.getElementById('loadingOverlay').classList.add('active');
+            const loadingText = document.getElementById('loadingText');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingText) loadingText.textContent = text;
+            if (loadingOverlay) loadingOverlay.classList.add('active');
         }
         
         function hideLoading() {
-            document.getElementById('loadingOverlay').classList.remove('active');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) loadingOverlay.classList.remove('active');
         }
         
         // ==================== TOAST ====================
@@ -702,13 +665,16 @@
                 <span class="font-medium">${message}</span>
             `;
             
-            document.getElementById('toastContainer').appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transition = 'all 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            const container = document.getElementById('toastContainer');
+            if (container) {
+                container.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'all 0.3s ease';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
         }
         
         // ==================== DATABASE OPERATIONS ====================
@@ -717,7 +683,7 @@
             try {
                 showLoading('Memuat data...');
                 
-                if (isSupabaseConfigured) {
+                if (isSupabaseConfigured && supabase) {
                     const { data, error } = await supabase
                         .from('cv_applications')
                         .select('*')
@@ -774,7 +740,7 @@
                     updated_at: new Date().toISOString()
                 };
                 
-                if (isSupabaseConfigured) {
+                if (isSupabaseConfigured && supabase) {
                     if (editingCVId) {
                         const { error } = await supabase
                             .from('cv_applications')
@@ -830,7 +796,7 @@
                 
                 let cv = null;
                 
-                if (isSupabaseConfigured) {
+                if (isSupabaseConfigured && supabase) {
                     const { data, error } = await supabase
                         .from('cv_applications')
                         .select('*')
@@ -875,11 +841,13 @@
         
         function deleteCV(cvId) {
             deleteCVId = cvId;
-            document.getElementById('deleteModal').classList.add('active');
+            const modal = document.getElementById('deleteModal');
+            if (modal) modal.classList.add('active');
         }
         
         function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.remove('active');
+            const modal = document.getElementById('deleteModal');
+            if (modal) modal.classList.remove('active');
             deleteCVId = null;
         }
         
@@ -890,7 +858,7 @@
                 showLoading('Menghapus data...');
                 closeDeleteModal();
                 
-                if (isSupabaseConfigured) {
+                if (isSupabaseConfigured && supabase) {
                     const { error } = await supabase
                         .from('cv_applications')
                         .delete()
@@ -920,6 +888,12 @@
         
         async function cetakPDF() {
             try {
+                // Check if required libraries are loaded
+                if (typeof window.jspdf === 'undefined' || typeof html2canvas === 'undefined') {
+                    showToast('Library PDF belum dimuat. Silakan refresh halaman.', 'error');
+                    return;
+                }
+                
                 showLoading('Membuat PDF...');
                 
                 const judulCV = document.getElementById('judulCV').value;
@@ -1025,26 +999,32 @@
         // ==================== UI FUNCTIONS ====================
         
         function showSection(section) {
-            document.getElementById('sectionDashboard').classList.add('hidden');
-            document.getElementById('sectionCVList').classList.add('hidden');
-            document.getElementById('sectionForm').classList.add('hidden');
+            const sections = ['sectionDashboard', 'sectionCVList', 'sectionForm'];
+            sections.forEach(s => {
+                const el = document.getElementById(s);
+                if (el) el.classList.add('hidden');
+            });
+            
+            const btnPDF = document.getElementById('btnCetakPDF');
             
             if (section === 'dashboard') {
                 document.getElementById('sectionDashboard').classList.remove('hidden');
-                document.getElementById('btnCetakPDF').classList.add('hidden');
+                if (btnPDF) btnPDF.classList.add('hidden');
             } else if (section === 'cv-list') {
                 document.getElementById('sectionCVList').classList.remove('hidden');
-                document.getElementById('btnCetakPDF').classList.add('hidden');
+                if (btnPDF) btnPDF.classList.add('hidden');
             } else if (section === 'form') {
                 document.getElementById('sectionForm').classList.remove('hidden');
-                document.getElementById('btnCetakPDF').classList.remove('hidden');
+                if (btnPDF) btnPDF.classList.remove('hidden');
             }
         }
         
         function buatLamaranBaru() {
             editingCVId = null;
-            document.getElementById('formCV').reset();
-            document.getElementById('formTitle').textContent = 'Buat Lamaran Baru';
+            const form = document.getElementById('formCV');
+            if (form) form.reset();
+            const formTitle = document.getElementById('formTitle');
+            if (formTitle) formTitle.textContent = 'Buat Lamaran Baru';
             showSection('form');
         }
         
@@ -1054,16 +1034,25 @@
             const draft = cvList.filter(cv => cv.status === 'draft').length;
             const templates = new Set(cvList.map(cv => cv.jenis_instansi).filter(Boolean)).size;
             
-            document.getElementById('totalCVCount').textContent = total;
-            document.getElementById('statTotalCV').textContent = total;
-            document.getElementById('statPublished').textContent = published;
-            document.getElementById('statDraft').textContent = draft;
-            document.getElementById('statTemplates').textContent = templates;
+            const statElements = {
+                'totalCVCount': total,
+                'statTotalCV': total,
+                'statPublished': published,
+                'statDraft': draft,
+                'statTemplates': templates
+            };
+            
+            Object.entries(statElements).forEach(([id, value]) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            });
         }
         
         function renderDashboard() {
             const container = document.getElementById('daftarCVTerbaru');
             const emptyState = document.getElementById('emptyStateDashboard');
+            
+            if (!container || !emptyState) return;
             
             if (cvList.length === 0) {
                 container.innerHTML = '';
@@ -1109,6 +1098,8 @@
             const container = document.getElementById('daftarSemuaCV');
             const emptyState = document.getElementById('emptyStateCVList');
             
+            if (!container || !emptyState) return;
+            
             if (cvList.length === 0) {
                 container.innerHTML = '';
                 emptyState.classList.remove('hidden');
@@ -1147,29 +1138,40 @@
         }
         
         function formatDate(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-            
-            if (diff === 0) return 'Hari ini';
-            if (diff === 1) return 'Kemarin';
-            if (diff < 7) return `${diff} hari lalu`;
-            if (diff < 30) return `${Math.floor(diff / 7)} minggu lalu`;
-            return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+            try {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+                
+                if (diff === 0) return 'Hari ini';
+                if (diff === 1) return 'Kemarin';
+                if (diff < 7) return `${diff} hari lalu`;
+                if (diff < 30) return `${Math.floor(diff / 7)} minggu lalu`;
+                return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+            } catch (e) {
+                return 'Tanggal tidak valid';
+            }
         }
         
         // ==================== INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🚀 Resume Leader with Supabase - Starting...');
+        
+        // Wait for all scripts to load
+        window.addEventListener('load', async function() {
+            console.log('🚀 Resume Leader - Starting initialization...');
             
+            // Initialize Supabase
+            initSupabase();
+            
+            // Check auto login
             const loggedIn = await checkAutoLogin();
             
             if (!loggedIn) {
-                document.getElementById('sectionAuth').classList.remove('hidden');
+                const authSection = document.getElementById('sectionAuth');
+                if (authSection) authSection.classList.remove('hidden');
             }
             
             console.log('✅ Resume Leader loaded successfully!');
         });
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9af2ca3b23e2ea8a',t:'MTc2NTkzNjQ0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9af2ef525700e785',t:'MTc2NTkzNzk1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
